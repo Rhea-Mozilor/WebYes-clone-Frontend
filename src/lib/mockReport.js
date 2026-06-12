@@ -1,0 +1,121 @@
+const mockReport = {
+  scanId: 'mock-abc123',
+  url: 'https://www.example.com/',
+  device: 'desktop',
+  screenshot: null,
+  location: { flag: '🇮🇳', city: 'Mumbai' },
+  scannedAt: '2026-06-12T08:12:00Z',
+  overallScore: 85,
+  scores: {
+    accessibility: 59,
+    performance: 99,
+    quality: 96,
+    seo: 91,
+  },
+  categories: {
+    accessibility: {
+      score: 59,
+      description: 'Assess your website with automated WCAG 2.2 A/AA tests.',
+      totalChecks: 25,
+      passedChecks: 24,
+      issuesFound: 1,
+      issues: [
+        {
+          id: 'a1',
+          title: 'Uses ARIA roles on incompatible elements',
+          failingElements: 3,
+        },
+        {
+          id: 'a2',
+          title: 'Buttons do not have an accessible name',
+          failingElements: 2,
+        },
+      ],
+      passed: [
+        { id: 'a3', title: '`[aria-*]` attributes match their roles' },
+        { id: 'a4', title: 'Image elements have `[alt]` attributes' },
+        { id: 'a5', title: 'Form elements have associated labels' },
+        { id: 'a6', title: 'Links have a discernible name' },
+        { id: 'a7', title: 'Document has a `<title>` element' },
+        { id: 'a8', title: 'Heading elements appear in a sequentially-descending order' },
+        { id: 'a9', title: 'Color contrast ratio meets WCAG AA' },
+        { id: 'a10', title: '`<html>` element has a `[lang]` attribute' },
+      ],
+    },
+    performance: {
+      score: 99,
+      description: 'Measures page speed metrics including LCP, FID, and CLS.',
+      totalChecks: 20,
+      passedChecks: 19,
+      issuesFound: 1,
+      issues: [
+        {
+          id: 'p1',
+          title: 'Serve images in next-gen formats',
+          failingElements: 5,
+        },
+      ],
+      passed: [
+        { id: 'p2', title: 'Eliminate render-blocking resources' },
+        { id: 'p3', title: 'Minify CSS' },
+        { id: 'p4', title: 'Minify JavaScript' },
+        { id: 'p5', title: 'Remove unused CSS' },
+        { id: 'p6', title: 'Efficiently encode images' },
+        { id: 'p7', title: 'Enable text compression' },
+        { id: 'p8', title: 'Preconnect to required origins' },
+        { id: 'p9', title: 'Reduce initial server response time (TTFB)' },
+        { id: 'p10', title: 'Avoid multiple page redirects' },
+      ],
+    },
+    quality: {
+      score: 96,
+      description: 'Checks for best practices in HTML, security headers, and code quality.',
+      totalChecks: 18,
+      passedChecks: 17,
+      issuesFound: 1,
+      issues: [
+        {
+          id: 'q1',
+          title: 'Uses deprecated APIs',
+          failingElements: 1,
+        },
+      ],
+      passed: [
+        { id: 'q2', title: 'Page has valid HTML doctype' },
+        { id: 'q3', title: 'Avoids requesting the geolocation permission on page load' },
+        { id: 'q4', title: 'Avoids requesting the notification permission on page load' },
+        { id: 'q5', title: 'No browser errors logged to the console' },
+        { id: 'q6', title: 'Page is served over HTTPS' },
+        { id: 'q7', title: 'Links to cross-origin destinations are safe' },
+        { id: 'q8', title: 'Avoid front-end JavaScript libraries with known security vulnerabilities' },
+        { id: 'q9', title: 'Charset declaration is present and occurs early in `<head>`' },
+      ],
+    },
+    seo: {
+      score: 91,
+      description: 'Ensures your page is optimised for search engine indexing and ranking.',
+      totalChecks: 15,
+      passedChecks: 14,
+      issuesFound: 1,
+      issues: [
+        {
+          id: 's1',
+          title: 'Image elements do not have explicit `width` and `height`',
+          failingElements: 4,
+        },
+      ],
+      passed: [
+        { id: 's2', title: 'Document has a meta description' },
+        { id: 's3', title: 'Page has successful HTTP status code' },
+        { id: 's4', title: 'Links are crawlable' },
+        { id: 's5', title: 'Page isn\'t blocked from indexing' },
+        { id: 's6', title: 'Document has a valid `hreflang`' },
+        { id: 's7', title: '`robots.txt` is valid' },
+        { id: 's8', title: 'Document has a valid `rel=canonical`' },
+        { id: 's9', title: 'Structured data is valid' },
+      ],
+    },
+  },
+}
+
+export default mockReport
