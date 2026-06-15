@@ -21,7 +21,7 @@ export default function ResultsDrawer({ isOpen, onClose, children }) {
     >
       <DrawerHeader onClose={onClose} />
       <div className="flex-1 overflow-y-auto" style={{ backgroundColor: '#EEF2F7' }}>
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 space-y-6">
+        <div className="max-w-screen-2xl mx-auto px-16 sm:px-20 py-10 space-y-6">
           {children}
         </div>
       </div>

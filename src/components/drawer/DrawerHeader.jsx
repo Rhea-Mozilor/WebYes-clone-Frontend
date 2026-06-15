@@ -11,8 +11,8 @@ export default function DrawerHeader({ onClose }) {
         className="flex items-center gap-1 text-sm font-medium transition-opacity hover:opacity-75"
         style={{ color: '#94A3B8' }}
       >
-        <ChevronLeft size={18} />
-        Back
+        <ChevronLeft size={16} />
+        Back to home
       </button>
 
       <span className="text-white font-bold text-base tracking-tight">

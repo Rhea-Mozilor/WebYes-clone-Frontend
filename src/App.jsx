@@ -1,8 +1,8 @@
 import { useState } from 'react'
+import { useMutation } from '@tanstack/react-query'
 import { AlertCircle } from 'lucide-react'
-import { useScan } from './hooks/useScan'
-import { useScanStatus } from './hooks/useScanStatus'
-import { useReport } from './hooks/useReport'
+import { guestScan } from './services/api'
+import mockReport from './lib/mockReport'
 import URLInputForm from './components/home/URLInputForm'
 import DeviceSelector from './components/home/DeviceSelector'
 import ResultsDrawer from './components/drawer/ResultsDrawer'
@@ -12,49 +12,42 @@ import CategoryTabs from './components/drawer/CategoryTabs'
 import CategoryDetail from './components/drawer/CategoryDetail'
 import IssueList from './components/drawer/IssueList'
 import PassedList from './components/drawer/PassedList'
+import CoreWebVitals from './components/drawer/CoreWebVitals'
 import UpsellBanner from './components/drawer/UpsellBanner'
 import BottomCTA from './components/drawer/BottomCTA'
 import SkeletonLoader from './components/ui/SkeletonLoader'
 
 const USE_MOCK = import.meta.env.VITE_USE_MOCK === 'true'
 
+const mockScanFn = () =>
+  new Promise((resolve) => setTimeout(() => resolve(mockReport), 1500))
+
 export default function App() {
-  const [device, setDevice]       = useState('desktop')
-  const [scanId, setScanId]       = useState(null)
+  const [device, setDevice]             = useState('desktop')
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
-  const [activeTab, setActiveTab] = useState('accessibility')
+  const [report, setReport]             = useState(null)
+  const [activeTab, setActiveTab]       = useState('accessibility')
 
-  const { mutate, isPending } = useScan({
-    onSuccess: (data) => {
-      setScanId(data.scanId)
-      setIsDrawerOpen(true)
-    },
-  })
-
-  const { data: statusData } = useScanStatus(scanId)
-  const scanComplete = statusData?.status === 'complete'
-  const scanError    = statusData?.status === 'error'
-
-  const { data: report, isLoading: reportLoading } = useReport(scanId, {
-    isReady: scanComplete,
+  const { mutate, isPending, isError, reset } = useMutation({
+    mutationFn: USE_MOCK
+      ? mockScanFn
+      : ({ url, strategy }) => guestScan({ url, strategy }),
+    onSuccess: (data) => setReport(data),
   })
 
   const handleScan = (url) => {
-    if (USE_MOCK) {
-      setScanId('mock-abc123')
-      setIsDrawerOpen(true)
-      return
-    }
-    mutate({ url, device })
+    setReport(null)
+    reset()
+    setIsDrawerOpen(true)
+    mutate({ url, strategy: device })
   }
 
   const handleClose = () => {
     setIsDrawerOpen(false)
-    setScanId(null)
+    setReport(null)
+    reset()
     setActiveTab('accessibility')
   }
-
-  const isLoading = !report && !scanError
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#EEF2F7' }}>
@@ -83,19 +76,16 @@ export default function App() {
           </p>
         </div>
 
-        {/* Input card */}
         <div
           className="w-full max-w-2xl bg-white rounded-2xl shadow-md p-6"
           style={{ border: '1px solid #E2E8F0' }}
         >
           <URLInputForm onSubmit={handleScan} isPending={isPending} />
-
           <div className="mt-4">
             <DeviceSelector value={device} onChange={setDevice} />
           </div>
         </div>
 
-        {/* Trust line */}
         <p className="mt-6 text-xs" style={{ color: '#94A3B8' }}>
           Free · No signup required · Powered by WCAG 2.2
         </p>
@@ -103,7 +93,7 @@ export default function App() {
 
       <ResultsDrawer isOpen={isDrawerOpen} onClose={handleClose}>
         {/* Error state */}
-        {scanError && (
+        {isError && (
           <div className="flex flex-col items-center justify-center py-24 gap-4">
             <AlertCircle size={40} style={{ color: '#EF4444' }} />
             <div className="text-center">
@@ -125,19 +115,16 @@ export default function App() {
         )}
 
         {/* Loading skeleton */}
-        {!scanError && isLoading && (
+        {isPending && (
           <div className="space-y-6">
-            {/* Summary card skeleton */}
             <div className="bg-white rounded-2xl p-5" style={{ border: '1px solid #E2E8F0' }}>
               <div className="flex gap-4">
-                <div className="w-28 h-20 rounded-xl animate-pulse" style={{ backgroundColor: '#E2E8F0' }} />
+                <div className="w-28 h-20 rounded-xl animate-pulse shrink-0" style={{ backgroundColor: '#E2E8F0' }} />
                 <div className="flex-1 space-y-3 pt-1">
                   <SkeletonLoader rows={3} />
                 </div>
               </div>
             </div>
-
-            {/* Score card skeleton */}
             <div className="bg-white rounded-2xl p-6" style={{ border: '1px solid #E2E8F0' }}>
               <div className="flex gap-8 items-center">
                 <div className="w-36 h-36 rounded-full animate-pulse shrink-0" style={{ backgroundColor: '#E2E8F0' }} />
@@ -146,19 +133,16 @@ export default function App() {
                 </div>
               </div>
             </div>
-
-            {/* Tabs skeleton */}
             <div className="bg-white rounded-2xl p-5" style={{ border: '1px solid #E2E8F0' }}>
               <SkeletonLoader rows={6} />
             </div>
-
             <p className="text-center text-sm animate-pulse" style={{ color: '#64748B' }}>
-              Running audit…
+              Running Lighthouse audit — this takes about 20 seconds…
             </p>
           </div>
         )}
 
-        {/* Report content */}
+        {/* Report */}
         {report && (
           <>
             <AuditSummaryCard report={report} />
@@ -169,6 +153,9 @@ export default function App() {
               onTabChange={setActiveTab}
             >
               <CategoryDetail category={report.categories[activeTab]} />
+              {activeTab === 'performance' && (
+                <CoreWebVitals metrics={report.metrics} filmstrip={report.filmstrip} />
+              )}
               <IssueList issues={report.categories[activeTab].issues} />
               <PassedList passed={report.categories[activeTab].passed} />
             </CategoryTabs>

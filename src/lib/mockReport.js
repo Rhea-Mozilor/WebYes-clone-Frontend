@@ -12,6 +12,15 @@ const mockReport = {
     quality: 96,
     seo: 91,
   },
+  metrics: {
+    'first-contentful-paint':  { value: 380,  displayValue: '0.4 s',  score: 99 },
+    'largest-contentful-paint': { value: 1380, displayValue: '1.4 s',  score: 91 },
+    'speed-index':             { value: 700,  displayValue: '0.7 s',  score: 97 },
+    'total-blocking-time':     { value: 70,   displayValue: '70 ms',  score: 97 },
+    'cumulative-layout-shift': { value: 0,    displayValue: '0',      score: 100 },
+    'interactive':             { value: 1400, displayValue: '1.4 s',  score: 95 },
+  },
+  filmstrip: [],
   categories: {
     accessibility: {
       score: 59,

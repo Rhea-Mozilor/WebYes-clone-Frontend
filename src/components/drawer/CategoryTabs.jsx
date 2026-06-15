@@ -18,7 +18,7 @@ export default function CategoryTabs({ categories, activeTab, onTabChange, child
             <button
               key={key}
               onClick={() => onTabChange(key)}
-              className="flex items-center gap-2 px-5 py-4 text-sm whitespace-nowrap transition-colors shrink-0 border-b-2"
+              className="flex items-center gap-2 px-7 py-5 text-base whitespace-nowrap transition-colors shrink-0 border-b-2"
               style={{
                 borderBottomColor: active ? '#2563EB' : 'transparent',
                 color: active ? '#2563EB' : '#64748B',
@@ -28,10 +28,10 @@ export default function CategoryTabs({ categories, activeTab, onTabChange, child
               {label}
               {issueCount > 0 && (
                 <span
-                  className="inline-flex items-center justify-center w-5 h-5 rounded-full text-white text-xs font-bold"
-                  style={{ backgroundColor: '#F97316' }}
+                  className="inline-flex items-center gap-0.5 text-xs font-semibold"
+                  style={{ color: '#F97316' }}
                 >
-                  {issueCount}
+                  △{issueCount}
                 </span>
               )}
             </button>

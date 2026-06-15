@@ -1,41 +1,22 @@
-import { Zap } from 'lucide-react'
-
 export default function UpsellBanner() {
   return (
     <div
-      className="rounded-2xl p-5 flex items-start gap-4"
-      style={{
-        backgroundColor: '#FEF3E2',
-        border: '1px solid #FED7AA',
-        borderLeft: '4px solid #F97316',
-      }}
+      className="rounded-2xl p-8 text-center"
+      style={{ backgroundColor: '#FEF3E2', border: '1px solid #FED7AA' }}
     >
-      {/* Icon */}
-      <div
-        className="shrink-0 w-9 h-9 rounded-lg flex items-center justify-center mt-0.5"
-        style={{ backgroundColor: '#F97316' }}
+      <h3 className="text-lg font-bold mb-2" style={{ color: '#F97316' }}>
+        Just a few steps from full accessibility
+      </h3>
+      <p className="text-sm leading-relaxed mb-6 max-w-lg mx-auto" style={{ color: '#92400E' }}>
+        Your page is in good shape based on automated checks. Refine a few areas, then run a full scan
+        with manual checks to ensure full compliance. We'll guide you through it.
+      </p>
+      <button
+        className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold text-white transition-opacity hover:opacity-90"
+        style={{ backgroundColor: '#2563EB' }}
       >
-        <Zap size={18} fill="white" style={{ color: 'white' }} />
-      </div>
-
-      {/* Text + CTA */}
-      <div className="flex-1 min-w-0">
-        <p className="text-sm font-semibold mb-1" style={{ color: '#1E2B4A' }}>
-          Get a full manual accessibility audit
-        </p>
-        <p className="text-xs leading-relaxed mb-3" style={{ color: '#92400E' }}>
-          Our experts will review your site against all WCAG 2.2 criteria and deliver
-          a prioritised fix report within 48 hours.
-        </p>
-        <button
-          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold
-            text-white transition-opacity hover:opacity-90"
-          style={{ backgroundColor: '#F97316' }}
-        >
-          <Zap size={13} fill="white" style={{ color: 'white' }} />
-          Get Expert Audit
-        </button>
-      </div>
+        Ensure full compliance ↗
+      </button>
     </div>
   )
 }

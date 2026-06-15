@@ -1,20 +1,14 @@
 import { PieChart, Pie, Cell } from 'recharts'
 
-const scoreColor = (score) => {
-  if (score >= 80) return '#22C55E'
-  if (score >= 50) return '#F59E0B'
-  return '#EF4444'
-}
+const scoreColor = (score) => score >= 70 ? '#2563EB' : '#F97316'
 
-export default function HalfDonutGauge({ score, size = 160 }) {
+export default function HalfDonutGauge({ score, size = 180 }) {
   const color = scoreColor(score)
-  const data = [
-    { value: score },
-    { value: 100 - score },
-  ]
+  const track = color === '#F97316' ? '#FEE9D4' : '#DBEAFE'
+  const data = [{ value: score }, { value: 100 - score }]
   const innerRadius = size * 0.36
   const outerRadius = size * 0.48
-  const chartHeight = size / 2 + outerRadius * 0.1
+  const chartHeight = size / 2 + outerRadius * 0.15
 
   return (
     <div className="relative inline-flex flex-col items-center" style={{ width: size }}>
@@ -31,14 +25,13 @@ export default function HalfDonutGauge({ score, size = 160 }) {
           strokeWidth={0}
         >
           <Cell fill={color} />
-          <Cell fill="#E2E8F0" />
+          <Cell fill={track} />
         </Pie>
       </PieChart>
-      <div className="flex flex-col items-center -mt-2">
+      <div className="flex flex-col items-center" style={{ marginTop: -8 }}>
         <span className="font-bold leading-none" style={{ fontSize: size * 0.2, color }}>
-          {score}
+          {score}%
         </span>
-        <span className="text-[#64748B] text-xs mt-0.5">/100</span>
       </div>
     </div>
   )
