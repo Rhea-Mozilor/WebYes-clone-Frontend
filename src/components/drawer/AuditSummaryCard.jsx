@@ -21,7 +21,7 @@ export default function AuditSummaryCard({ report }) {
 
       {/* Screenshot — left 45% */}
       <div
-        className="shrink-0 flex items-center justify-center p-6 rounded-l-2xl"
+        className="shrink-0 flex items-center justify-center p-5"
         style={{
           width: '45%',
           minHeight: 320,
@@ -30,16 +30,21 @@ export default function AuditSummaryCard({ report }) {
         }}
       >
         {screenshot
-          ? <img
-              src={screenshot}
-              alt={`Screenshot of ${url}`}
-              className="w-full object-contain rounded-xl"
+          ? <div
+              className="w-full rounded-2xl overflow-hidden"
               style={{
+                aspectRatio: '4 / 3',
                 border: '1px solid #E2E8F0',
-                boxShadow: '0 1px 4px rgba(0,0,0,0.08)',
-                imageRendering: 'crisp-edges',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.07)',
               }}
-            />
+            >
+              <img
+                src={screenshot}
+                alt={`Screenshot of ${url}`}
+                className="w-full h-full object-cover"
+                style={{ imageRendering: 'crisp-edges' }}
+              />
+            </div>
           : <Globe size={40} style={{ color: '#CBD5E1' }} />
         }
       </div>
