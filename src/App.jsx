@@ -156,7 +156,7 @@ export default function App() {
                 <CoreWebVitals metrics={report.metrics} filmstrip={report.filmstrip} />
               )}
               <UpsellBanner />
-              <IssueList issues={report.categories[activeTab].issues} />
+              <IssueList issues={report.categories[activeTab].issues} tabKey={activeTab} />
               <PassedList passed={report.categories[activeTab].passed} />
             </CategoryTabs>
             <BottomCTA />

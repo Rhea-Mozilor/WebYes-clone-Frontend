@@ -1,6 +1,6 @@
 import CheckRow from './CheckRow'
 
-export default function IssueList({ issues }) {
+export default function IssueList({ issues, tabKey = 'accessibility' }) {
   if (!issues?.length) return null
 
   return (
@@ -22,13 +22,16 @@ export default function IssueList({ issues }) {
         {issues.map((issue) => (
           <CheckRow
             key={issue.id}
+            auditId={issue.id}
             title={issue.title}
             variant="issue"
             description={issue.description}
             learnMoreUrl={issue.learnMoreUrl}
             displayValue={issue.displayValue}
             failingElements={issue.failingElements}
+            wastedMs={issue.wastedMs}
             items={issue.items}
+            tabKey={tabKey}
           />
         ))}
       </div>

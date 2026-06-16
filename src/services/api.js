@@ -37,6 +37,7 @@ const makeCategory = (catData = {}, description) => {
     learnMoreUrl:    issue.learn_more_url || issue.learnMoreUrl || null,
     displayValue:    issue.display_value || issue.displayValue || null,
     failingElements: issue.item_count ?? issue.itemCount ?? issue.items?.length ?? null,
+    wastedMs:        issue.wasted_ms    ?? issue.wastedMs    ?? null,
     items:           issue.items || [],
   }))
 
