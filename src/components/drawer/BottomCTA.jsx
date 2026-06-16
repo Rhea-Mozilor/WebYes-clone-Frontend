@@ -4,12 +4,12 @@ export default function BottomCTA() {
   return (
     <div
       className="rounded-2xl px-6 py-10 flex flex-col items-center text-center gap-4"
-      style={{ backgroundColor: '#1E2B4A' }}
+      style={{ backgroundColor: 'rgb(238, 242, 247)' }}
     >
-      <h2 className="text-xl font-bold text-white leading-snug max-w-sm">
-        Fix what's slowing down your site
-      </h2>
-      <p className="text-sm max-w-md leading-relaxed" style={{ color: '#94A3B8' }}>
+      <h1 className="text-xl font-bold text-black leading-snug max-w-sm">
+        <b>Fix what's slowing down your site</b>
+      </h1>
+      <p className="text-sm max-w-md leading-relaxed" style={{ color: '#000000' }}>
         WebYes turns your audit results into a step-by-step action plan — so your team
         knows exactly what to fix, in what order, and why it matters.
       </p>

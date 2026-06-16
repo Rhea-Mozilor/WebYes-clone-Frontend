@@ -1,36 +1,70 @@
 import HalfDonutGauge from '../ui/HalfDonutGauge'
+import { CheckCircle2, CircleAlert } from 'lucide-react'
 
-export default function CategoryDetail({ category }) {
+const TAB_LABELS = {
+  accessibility: 'Accessibility',
+  performance:   'Performance',
+  quality:       'Quality',
+  seo:           'SEO',
+}
+
+export default function CategoryDetail({ category, tabKey }) {
   const { score, description, totalChecks, passedChecks, issuesFound } = category
+  const name = TAB_LABELS[tabKey] || tabKey
 
   return (
-    <div className="flex flex-col sm:flex-row gap-8 items-start">
+    <div className="flex flex-row gap-10 items-center">
       {/* Half donut */}
       <div className="shrink-0 flex flex-col items-center">
-        <HalfDonutGauge score={score} size={280} />
+        <HalfDonutGauge score={score} size={160} />
       </div>
 
-      {/* Description + stats */}
-      <div className="flex-1 space-y-5">
-        <p className="text-sm leading-relaxed" style={{ color: '#64748B' }}>
-          {description}
-        </p>
+      {/* Name + description + stats */}
+      <div className="flex-1 flex flex-row gap-6 items-center justify-between">
+        <div className="flex flex-col gap-2">
+          <h3 className="font-extrabold" style={{ fontSize: 28, color: '#000000' }}>{name}</h3>
+          <p className="text-sm leading-relaxed" style={{ color: '#000000', maxWidth: 480 }}>
+            {description}
+          </p>
+        </div>
 
-        {/* Stats */}
+        {/* Stats box — compact, pinned to right */}
         <div
-          className="grid grid-cols-3 divide-x divide-[#E2E8F0] rounded-xl overflow-hidden"
+          className="rounded-xl overflow-hidden shrink-0 w-64"
           style={{ border: '1px solid #E2E8F0' }}
         >
-          {[
-            { label: 'Total checks',   value: totalChecks,  color: '#1E2B4A'  },
-            { label: 'Passed checks',  value: passedChecks, color: '#22C55E'  },
-            { label: 'Issues found',   value: issuesFound,  color: '#EF4444'  },
-          ].map(({ label, value, color }) => (
-            <div key={label} className="flex flex-col items-center py-12 px-4">
-              <span className="text-4xl font-bold" style={{ color }}>{value}</span>
-              <span className="text-sm mt-1 text-center" style={{ color: '#64748B' }}>{label}</span>
+          {/* Total checks */}
+          <div
+            className="flex items-center justify-between px-4 py-3"
+            style={{ borderBottom: '1px solid #E2E8F0' }}
+          >
+            <span className="text-sm font-medium" style={{ color: '#1E2B4A' }}>Total checks</span>
+            <span className="text-sm font-bold" style={{ color: '#1E2B4A' }}>{totalChecks}</span>
+          </div>
+
+          {/* Passed checks */}
+          <div
+            className="flex items-center justify-between px-4 py-3"
+            style={{ backgroundColor: '#F0FDF4', borderBottom: '1px solid #E2E8F0' }}
+          >
+            <div className="flex items-center gap-2">
+              <CheckCircle2 size={15} style={{ color: '#22C55E' }} />
+              <span className="text-sm font-medium" style={{ color: '#15803D' }}>Passed checks</span>
             </div>
-          ))}
+            <span className="text-sm font-bold" style={{ color: '#15803D' }}>{passedChecks}</span>
+          </div>
+
+          {/* Issues found */}
+          <div
+            className="flex items-center justify-between px-4 py-3"
+            style={{ backgroundColor: '#FFF1F2' }}
+          >
+            <div className="flex items-center gap-2">
+              <CircleAlert size={15} style={{ color: '#EF4444' }} />
+              <span className="text-sm font-medium" style={{ color: '#DC2626' }}>Issues found</span>
+            </div>
+            <span className="text-sm font-bold" style={{ color: '#DC2626' }}>{issuesFound}</span>
+          </div>
         </div>
       </div>
     </div>

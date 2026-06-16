@@ -52,15 +52,14 @@ export default function App() {
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#EEF2F7' }}>
       {/* Nav */}
-      <header className="h-16 flex items-center px-6 shadow-sm" style={{ backgroundColor: '#1E2B4A' }}>
-        <span className="text-white font-bold text-lg tracking-tight">
-          Web<span style={{ color: '#F97316' }}>Yes</span>
+      <header className="h-16 flex items-center px-6 shadow-sm" style={{ backgroundColor: '#ffffff' }}>
+        <span className="text-black font-bold text-lg tracking-tight">
+          <span style={{ color: '#065bd2' }}>W</span>ebYes
         </span>
         <span
           className="ml-3 text-xs font-medium px-2 py-0.5 rounded-full"
           style={{ backgroundColor: 'rgba(255,255,255,0.12)', color: '#94A3B8' }}
         >
-          Accessibility Checker
         </span>
       </header>
 
@@ -152,14 +151,14 @@ export default function App() {
               activeTab={activeTab}
               onTabChange={setActiveTab}
             >
-              <CategoryDetail category={report.categories[activeTab]} />
+              <CategoryDetail category={report.categories[activeTab]} tabKey={activeTab} />
               {activeTab === 'performance' && (
                 <CoreWebVitals metrics={report.metrics} filmstrip={report.filmstrip} />
               )}
+              <UpsellBanner />
               <IssueList issues={report.categories[activeTab].issues} />
               <PassedList passed={report.categories[activeTab].passed} />
             </CategoryTabs>
-            <UpsellBanner />
             <BottomCTA />
           </>
         )}

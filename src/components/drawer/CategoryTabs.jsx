@@ -1,8 +1,10 @@
+import { Accessibility, Gauge, BadgeCheck, SearchCode } from 'lucide-react'
+
 const TABS = [
-  { key: 'accessibility', label: 'Accessibility' },
-  { key: 'performance',   label: 'Performance'   },
-  { key: 'quality',       label: 'Quality'        },
-  { key: 'seo',           label: 'SEO'            },
+  { key: 'accessibility', label: 'Accessibility', Icon: Accessibility },
+  { key: 'performance',   label: 'Performance',   Icon: Gauge         },
+  { key: 'quality',       label: 'Quality',       Icon: BadgeCheck    },
+  { key: 'seo',           label: 'SEO',           Icon: SearchCode    },
 ]
 
 export default function CategoryTabs({ categories, activeTab, onTabChange, children }) {
@@ -10,7 +12,7 @@ export default function CategoryTabs({ categories, activeTab, onTabChange, child
     <div className="bg-white rounded-2xl overflow-hidden" style={{ border: '1px solid #E2E8F0' }}>
       {/* Tab bar */}
       <div className="flex overflow-x-auto" style={{ borderBottom: '1px solid #E2E8F0' }}>
-        {TABS.map(({ key, label }) => {
+        {TABS.map(({ key, label, Icon }) => {
           const active = activeTab === key
           const issueCount = categories[key]?.issuesFound ?? 0
 
@@ -25,13 +27,14 @@ export default function CategoryTabs({ categories, activeTab, onTabChange, child
                 fontWeight: active ? 600 : 400,
               }}
             >
+              <Icon size={17} />
               {label}
               {issueCount > 0 && (
                 <span
                   className="inline-flex items-center gap-0.5 text-xs font-semibold"
                   style={{ color: '#F97316' }}
                 >
-                  △{issueCount}
+                  (⚠️{issueCount})
                 </span>
               )}
             </button>

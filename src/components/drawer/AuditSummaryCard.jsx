@@ -15,7 +15,7 @@ export default function AuditSummaryCard({ report }) {
   return (
     <div
       className="bg-white rounded-2xl flex gap-0 items-stretch overflow-hidden"
-      style={{ border: '1px solid #E2E8F0' }}
+      style={{ border: '1px  #E2E8F0' }}
     >
       {showShare && <ShareModal onClose={() => setShowShare(false)} />}
 
@@ -25,23 +25,24 @@ export default function AuditSummaryCard({ report }) {
         style={{
           width: '45%',
           minHeight: 320,
-          backgroundColor: '#F1F5F9',
-          borderRight: '1px solid #E2E8F0',
+          backgroundColor: '#fdfdfd',
+          borderRight: '1px #E2E8F0',
         }}
       >
         {screenshot
           ? <div
-              className="w-full rounded-2xl overflow-hidden"
+              className=" flex items-center justify-center p-5 rounded-2xl overflow-hidden"
               style={{
-                aspectRatio: '4 / 3',
+                aspectRatio: '4/3 ',
                 border: '1px solid #E2E8F0',
+                backgroundColor: '#e9e9ec',
                 boxShadow: '0 2px 8px rgba(0,0,0,0.07)',
               }}
             >
               <img
                 src={screenshot}
                 alt={`Screenshot of ${url}`}
-                className="w-full h-full object-cover"
+                className="flex items-center justify-center p-5 object-cover"
                 style={{ imageRendering: 'crisp-edges' }}
               />
             </div>

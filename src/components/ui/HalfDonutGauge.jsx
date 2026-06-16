@@ -2,7 +2,7 @@ import { PieChart, Pie, Cell } from 'recharts'
 
 const scoreColor = (score) => score >= 70 ? '#2563EB' : '#F97316'
 
-export default function HalfDonutGauge({ score, size = 180 }) {
+export default function HalfDonutGauge({ score, size = 50 }) {
   const color = scoreColor(score)
   const track = color === '#F97316' ? '#FEE9D4' : '#DBEAFE'
   const data = [{ value: score }, { value: 100 - score }]
