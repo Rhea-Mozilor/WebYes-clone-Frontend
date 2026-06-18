@@ -3,7 +3,7 @@ import { PieChart, Pie, Cell } from 'recharts'
 export default function DonutGauge({ score, size = 120 }) {
   const data = [{ value: score }, { value: 100 - score }]
   const innerRadius = size * 0.35
-  const outerRadius = size * 0.39 
+  const outerRadius = size * 0.40 
 
   return (
     <div className="relative inline-flex items-center justify-center" style={{ width: size, height: size }}>

@@ -222,7 +222,7 @@ function GenericItemsTable({ items }) {
 const TREE_GRID = '1fr 120px 130px 80px'
 
 function NetworkTreeNode({ node, depth = 0 }) {
-  const [expanded, setExpanded] = useState(true)
+  const [expanded, setExpanded] = useState(depth === 0)
   const hasChildren = Object.keys(node.children ?? {}).length > 0
 
   return (
@@ -293,44 +293,190 @@ function NetworkTreeNode({ node, depth = 0 }) {
   )
 }
 
-function NetworkTreeTable({ items }) {
-  const section = items.find(i => i.type === 'list-section')
-  const treeData = section?.value
-  if (!treeData || treeData.type !== 'network-tree') return null
+/* Renders value.type === 'network-tree' */
+function NetworkTreeSection({ value }) {
+  const { chains = {}, longestChain } = value
+  return (
+    <div>
+      {longestChain?.duration != null && (
+        <div className="px-4 py-2.5 text-sm font-medium"
+          style={{ backgroundColor: '#F8FAFC', borderBottom: '1px solid #E2E8F0', color: '#64748B' }}>
+          Longest chain duration:{' '}
+          <span className="font-semibold" style={{ color: '#1E2B4A' }}>{formatMs(longestChain.duration)}</span>
+        </div>
+      )}
+      <div className="grid px-4 py-3 text-xs font-semibold uppercase tracking-wide"
+        style={{ gridTemplateColumns: TREE_GRID, backgroundColor: '#EEF2F7', color: '#64748B' }}>
+        <span>Resource</span><span>Transfer Size</span><span>Duration</span><span>Path</span>
+      </div>
+      <div style={{ maxHeight: '360px', overflowY: 'auto' }}>
+        {Object.values(chains).map((node, i) => (
+          <NetworkTreeNode key={i} node={node} depth={0} />
+        ))}
+      </div>
+    </div>
+  )
+}
 
-  const { chains = {}, longestChain } = treeData
+/* Renders value.type === 'table' using headings */
+function TableSection({ value }) {
+  const { headings = [], items = [] } = value
+  if (!headings.length && !items.length) return null
+
+  // Build column keys from headings; fallback to auto-detect from items
+  const cols = headings.length
+    ? headings.map(h => ({ key: h.key, label: h.label, valueType: h.valueType }))
+    : Object.keys(items[0] || {})
+        .filter(k => !SKIP_KEYS.has(k))
+        .map(k => ({ key: k, label: COL_LABEL[k] || k, valueType: 'text' }))
+
+  if (!cols.length || !items.length) return null
+
+  const gridCols = `repeat(${Math.min(cols.length, 3)}, 1fr)`
+  const visibleCols = cols.slice(0, 3)
+
+  const renderCell = (col, item) => {
+    const val = item[col.key]
+    if (val == null) return '—'
+    if (col.valueType === 'node' || (val && typeof val === 'object' && val.type === 'node')) {
+      return val.selector || val.snippet || val.nodeLabel || '—'
+    }
+    if (col.valueType === 'source-location' || (val && typeof val === 'object' && val.type === 'source-location')) {
+      const url = val.url || ''
+      const fname = url ? url.split('/').pop() || url : ''
+      const loc = val.line != null ? `${fname}:${val.line}:${val.column ?? 0}` : fname
+      return url
+        ? <a href={url} target="_blank" rel="noopener noreferrer" className="hover:underline font-mono"
+             style={{ color: '#2563EB' }} title={url}>{truncate(loc, 55)}</a>
+        : (loc || '—')
+    }
+    if (col.valueType === 'url' || (typeof val === 'string' && val.startsWith('http'))) {
+      return <a href={val} target="_blank" rel="noopener noreferrer"
+                className="hover:underline" style={{ color: '#2563EB' }}>{truncate(val, 60)}</a>
+    }
+    if (typeof val === 'number') {
+      if (BYTES_KEYS.has(col.key)) return formatBytes(val)
+      if (MS_KEYS.has(col.key) || col.valueType === 'ms' || col.valueType === 'timespanMs') return formatMs(val)
+      return val.toLocaleString()
+    }
+    return truncate(String(val), 80)
+  }
+
+  return (
+    <div>
+      <div className="grid px-4 py-3 text-xs font-semibold uppercase tracking-wide"
+        style={{ gridTemplateColumns: gridCols, backgroundColor: '#EEF2F7', color: '#64748B' }}>
+        {visibleCols.map(c => <span key={c.key}>{c.label}</span>)}
+      </div>
+      {items.map((item, i) => (
+        <div key={i} className="grid px-4 py-3 items-start"
+          style={{ gridTemplateColumns: gridCols, borderBottom: '1px solid #F1F5F9' }}>
+          {visibleCols.map(c => (
+            <span key={c.key} className="text-sm pr-3 break-all leading-relaxed" style={{ color: '#475569' }}>
+              {renderCell(c, item)}
+            </span>
+          ))}
+        </div>
+      ))}
+    </div>
+  )
+}
+
+/* Renders a single list-section by its value.type */
+function ListSection({ section }) {
+  const { title, description, value } = section
+  if (!value) return null
+
+  return (
+    <div style={{ borderTop: '1px solid #E2E8F0' }}>
+      {/* Section heading */}
+      {(title || description) && (
+        <div className="px-4 py-3" style={{ backgroundColor: '#F8FAFC', borderBottom: '1px solid #E2E8F0' }}>
+          {title && <p className="text-sm font-semibold mb-0.5" style={{ color: '#1E2B4A' }}>{title}</p>}
+          {description && <p className="text-xs leading-relaxed" style={{ color: '#64748B' }}>{stripMd(description)}</p>}
+        </div>
+      )}
+
+      {/* Content */}
+      {value.type === 'network-tree' && <NetworkTreeSection value={value} />}
+      {value.type === 'table'        && <TableSection value={value} />}
+      {value.type === 'text'         && (
+        <div className="px-4 py-3">
+          <p className="text-sm" style={{ color: '#475569' }}>{value.value || '—'}</p>
+        </div>
+      )}
+    </div>
+  )
+}
+
+/* Renders type:'checklist' items (e.g. lcp-discovery-insight) */
+function ChecklistSection({ item }) {
+  const entries = Object.entries(item.items || {})
+  if (!entries.length) return null
+  return (
+    <div className="px-4 py-3 space-y-2" style={{ borderTop: '1px solid #F1F5F9' }}>
+      {entries.map(([key, check]) => (
+        <div key={key} className="flex items-center gap-2.5">
+          {check.value
+            ? <CheckCircle size={14} style={{ color: '#22C55E', flexShrink: 0 }} />
+            : <AlertTriangle size={14} style={{ color: '#F97316', flexShrink: 0 }} />
+          }
+          <span className="text-sm" style={{ color: '#475569' }}>{check.label}</span>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+/* Renders type:'node' items (DOM element reference) */
+function NodeSection({ item }) {
+  const selector = item.selector || item.nodeLabel
+  const snippet  = item.snippet
+  if (!selector && !snippet) return null
+  return (
+    <div className="px-4 py-3" style={{ borderTop: '1px solid #F1F5F9' }}>
+      {selector && (
+        <p className="text-xs font-mono break-all mb-1" style={{ color: '#475569' }}>{selector}</p>
+      )}
+      {snippet && (
+        <p className="text-xs font-mono break-all" style={{ color: '#94A3B8' }}>
+          {truncate(snippet, 200)}
+        </p>
+      )}
+    </div>
+  )
+}
+
+/* Handles insight items with explicit type:'table'|'checklist'|'node' */
+function InsightItemsTable({ items }) {
+  return (
+    <div>
+      <div style={{ height: 8 }} />
+      {items.map((item, i) => {
+        if (item.type === 'table') {
+          return (
+            <div key={i} style={{ borderTop: i > 0 ? '1px solid #E2E8F0' : undefined }}>
+              <TableSection value={item} />
+            </div>
+          )
+        }
+        if (item.type === 'checklist') return <ChecklistSection key={i} item={item} />
+        if (item.type === 'node')      return <NodeSection key={i} item={item} />
+        return null
+      })}
+    </div>
+  )
+}
+
+function NetworkTreeTable({ items }) {
+  const sections = items.filter(i => i.type === 'list-section')
+  if (!sections.length) return null
 
   return (
     <div>
       <div style={{ height: 8 }} />
-
-      {/* Longest chain duration header */}
-      {longestChain?.duration != null && (
-        <div
-          className="px-4 py-2.5 text-sm font-medium"
-          style={{ backgroundColor: '#F8FAFC', borderBottom: '1px solid #E2E8F0', color: '#64748B' }}
-        >
-          Longest chain duration:{' '}
-          <span className="font-semibold" style={{ color: '#1E2B4A' }}>
-            {formatMs(longestChain.duration)}
-          </span>
-        </div>
-      )}
-
-      {/* Table header */}
-      <div
-        className="grid px-4 py-3 text-xs font-semibold uppercase tracking-wide"
-        style={{ gridTemplateColumns: TREE_GRID, backgroundColor: '#EEF2F7', color: '#64748B' }}
-      >
-        <span>Resource</span>
-        <span>Transfer Size</span>
-        <span>Duration</span>
-        <span>Path</span>
-      </div>
-
-      {/* Root nodes */}
-      {Object.values(chains).map((node, i) => (
-        <NetworkTreeNode key={i} node={node} depth={0} />
+      {sections.map((section, i) => (
+        <ListSection key={i} section={section} />
       ))}
     </div>
   )
@@ -431,8 +577,10 @@ export default function CheckRow({
   const [isExpanded, setIsExpanded] = useState(false)
   const isIssue = variant === 'issue'
   const isAccessibility = tabKey === 'accessibility'
-  const isChainTree   = auditId === 'critical-request-chains' && items.some(i => i.depth != null)
-  const isNetworkTree = items.some(i => i.type === 'list-section' && i.value?.type === 'network-tree')
+  const isChainTree        = auditId === 'critical-request-chains' && items.some(i => i.depth != null)
+  const isNetworkTree      = items.some(i => i.type === 'list-section')
+  const isInsightStructured = !isNetworkTree && !isChainTree &&
+    items.some(i => i.type === 'table' || i.type === 'checklist' || i.type === 'node')
 
   const elementRows = items.filter(i => (i.node || i.element) && nodeSelector(i))
 
@@ -556,6 +704,8 @@ export default function CheckRow({
                   ? <NetworkTreeTable items={items} />
                   : isChainTree
                   ? <ChainTreeTable items={items} wastedMs={wastedMs} />
+                  : isInsightStructured
+                  ? <InsightItemsTable items={items} />
                   : <GenericItemsTable items={items} />
                 }
               </div>
