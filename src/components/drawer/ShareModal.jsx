@@ -1,16 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { X } from 'lucide-react'
+import { Dialog, DialogContent } from '@/components/ui/dialog'
 
 export default function ShareModal({ onClose }) {
   const [email, setEmail] = useState('')
-  const [agreed, setAgreed] = useState(false)
   const [sent, setSent] = useState(false)
-
-  useEffect(() => {
-    const handler = (e) => { if (e.key === 'Escape') onClose() }
-    window.addEventListener('keydown', handler)
-    return () => window.removeEventListener('keydown', handler)
-  }, [onClose])
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -19,12 +13,11 @@ export default function ShareModal({ onClose }) {
   }
 
   return (
-    <div
-      className="fixed inset-0 z-[100] flex items-center justify-center p-6"
-      style={{ backgroundColor: 'rgba(0,0,0,0.4)' }}
-      onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
-    >
-      <div className="bg-white rounded-2xl w-full max-w-xl p-10 relative">
+    <Dialog open onOpenChange={(open) => { if (!open) onClose() }}>
+      <DialogContent
+        showCloseButton={false}
+        className="w-full max-w-lg rounded-2xl p-18 gap-0 sm:max-w-lg"
+      >
         {/* Close */}
         <button
           onClick={onClose}
@@ -36,7 +29,6 @@ export default function ShareModal({ onClose }) {
 
         {sent ? (
           <div className="text-center py-4 space-y-5">
-            {/* Green checkmark circle */}
             <div className="flex justify-center">
               <div
                 className="w-16 h-16 rounded-full flex items-center justify-center"
@@ -48,19 +40,16 @@ export default function ShareModal({ onClose }) {
               </div>
             </div>
 
-            {/* Heading */}
             <h2 className="text-2xl font-bold" style={{ color: '#1E2B4A' }}>
               Your audit report is on its way!
             </h2>
 
-            {/* Subtext with email */}
             <p className="text-base" style={{ color: '#64748B' }}>
               We've sent the report to{' '}
               <span style={{ color: '#2563EB' }}>{email}</span>.{' '}
               Please check your inbox.
             </p>
 
-            {/* Mail client buttons */}
             <div className="flex gap-3 justify-center pt-2">
               {[
                 {
@@ -117,70 +106,40 @@ export default function ShareModal({ onClose }) {
             </div>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="space-y-7">
-            {/* Heading */}
-            <h2 className="text-4xl font-black leading-tight" style={{ color: '#1E2B4A' }}>
-              Get your detailed audit report
+          <form onSubmit={handleSubmit} className="space-y-5 w-full">
+            <h2 className="text-2xl font-bold" style={{ color: '#1E2B4A' }}>
+              Get Your Detailed Report
             </h2>
 
-            {/* Tab */}
-            <div style={{ borderBottom: '1px solid #E2E8F0' }}>
-              <span
-                className="inline-block pb-2 text-sm font-semibold"
-                style={{ color: '#2563EB', borderBottom: '2px solid #2563EB', marginBottom: -1 }}
-              >
-                Email report
-              </span>
-            </div>
-
-            {/* Description */}
-            <p className="text-base" style={{ color: '#1E2B4A' }}>
-              Drop your email and we'll send the full report straight to your inbox.
+            <p className="text-sm" style={{ color: '#64748B' }}>
+              Enter your email, and we'll send the full report straight to your inbox.
             </p>
 
-            {/* Email field */}
-            <div className="space-y-2">
-              <label className="text-base font-semibold" style={{ color: '#1E2B4A' }}>
+            <div className="space-y-1.5">
+              <label className="text-sm font-medium" style={{ color: '#1E2B4A' }}>
                 Business email<span style={{ color: '#EF4444' }}>*</span>
               </label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="jhone@example.com"
+                placeholder="john@example.com"
                 required
-                className="w-full rounded-xl px-4 py-4 text-base outline-none transition-all"
-                style={{
-                  border: '2px solid #2563EB',
-                  color: '#1E2B4A',
-                }}
+                className="w-full rounded-lg px-4 py-3 text-sm outline-none"
+                style={{ border: '1.5px solid #2563EB', color: '#1E2B4A' }}
               />
             </div>
 
-            {/* Checkbox */}
-            <label className="flex items-start gap-3 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={agreed}
-                onChange={(e) => setAgreed(e.target.checked)}
-                className="mt-0.5 w-4 h-4 shrink-0 cursor-pointer"
-              />
-              <span className="text-sm" style={{ color: '#1E2B4A' }}>
-                I agree to receive educational and product related emails from WebYes.
-              </span>
-            </label>
-
-            {/* Submit */}
             <button
               type="submit"
-              className="w-full py-5 rounded-xl text-white text-lg font-semibold transition-opacity hover:opacity-90"
+              className="w-full py-3.5 rounded-lg text-white text-sm font-semibold transition-opacity hover:opacity-90"
               style={{ backgroundColor: '#2563EB' }}
             >
-              Send to my inbox
+              Send Report
             </button>
           </form>
         )}
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   )
 }

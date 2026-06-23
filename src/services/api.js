@@ -106,7 +106,25 @@ const transformResponse = (data, device) => {
   }
 }
 
-export const guestScan = ({ url, strategy }) =>
-  axios
-    .post(`${BASE}/api/scans/guest`, { url, strategy })
-    .then((r) => transformResponse(r.data, strategy))
+export { transformResponse }
+
+export const guestScan = async ({ url, strategy }) => {
+  const r = await axios.post(`${BASE}/api/scans/guest`, { url, strategy })
+  const data = r.data
+  if (data.status === 'pending' && data.guest_scan_id) {
+    return { async: true, guestScanId: data.guest_scan_id, strategy }
+  }
+  return { async: false, report: transformResponse(data, strategy) }
+}
+
+export const pollGuestScan = ({ guestScanId, strategy }) =>
+  axios.get(`${BASE}/api/scans/guest/${guestScanId}`).then((r) => {
+    const data = r.data
+    if (data.status === 'complete' && data.data) {
+      return { status: 'complete', report: transformResponse(data.data, strategy) }
+    }
+    return { status: data.status, message: data.message }
+  })
+
+export const getScannerHealth = () =>
+  axios.get(`${BASE}/api/scans/health`, { timeout: 10000 }).then((r) => r.data)

@@ -28,11 +28,18 @@ export default function HalfDonutGauge({ score, size = 50 }) {
           <Cell fill={track} />
         </Pie>
       </PieChart>
-      <div className="flex flex-col items-center" style={{ marginTop: -8 }}>
-        <span className="font-bold leading-none" style={{ fontSize: size * 0.2, color }}>
-          {score}%
-        </span>
-      </div>
+      <span
+        className="absolute font-bold leading-none"
+        style={{
+          fontSize: size * 0.2,
+          color,
+          bottom: 0,
+          left: '55%',
+          transform: 'translateX(-50%)',
+        }}
+      >
+        {score}%
+      </span>
     </div>
   )
 }

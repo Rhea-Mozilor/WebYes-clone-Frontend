@@ -1,7 +1,7 @@
-import { useState } from 'react'
-import { useMutation } from '@tanstack/react-query'
+import { useState, useEffect } from 'react'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { AlertCircle } from 'lucide-react'
-import { guestScan } from './services/api'
+import { guestScan, pollGuestScan } from './services/api'
 import mockReport from './lib/mockReport'
 import URLInputForm from './components/home/URLInputForm'
 import DeviceSelector from './components/home/DeviceSelector'
@@ -27,13 +27,46 @@ export default function App() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const [report, setReport]             = useState(null)
   const [activeTab, setActiveTab]       = useState('accessibility')
+  const [errorType, setErrorType]       = useState(null) // 'scan_failed'
+  const [pollConfig, setPollConfig]     = useState(null) // { guestScanId, strategy }
 
   const { mutate, isPending, isError, reset } = useMutation({
     mutationFn: USE_MOCK
       ? mockScanFn
       : ({ url, strategy }) => guestScan({ url, strategy }),
-    onSuccess: (data) => setReport(data),
+    onSuccess: (result) => {
+      if (USE_MOCK || !result.async) {
+        setReport(USE_MOCK ? result : result.report)
+      } else {
+        setPollConfig({ guestScanId: result.guestScanId, strategy: result.strategy })
+      }
+    },
+    onError: () => {
+      setErrorType('scan_failed')
+    },
   })
+
+  // Poll result every 3s when in async mode
+  const { data: pollData } = useQuery({
+    queryKey: ['guest-poll', pollConfig?.guestScanId],
+    queryFn: () => pollGuestScan(pollConfig),
+    refetchInterval: (q) => q.state.data?.status === 'complete' ? false : 3000,
+    enabled: !!pollConfig,
+    retry: false,
+  })
+
+  useEffect(() => {
+    if (!pollData) return
+    if (pollData.status === 'complete') {
+      setPollConfig(null)
+      setReport(pollData.report)
+    } else if (pollData.status === 'error') {
+      setPollConfig(null)
+      setErrorType('scan_failed')
+    }
+  }, [pollData])
+
+  const isLoading = isPending || !!pollConfig
 
   const handleScan = (url) => {
     setReport(null)
@@ -45,7 +78,9 @@ export default function App() {
   const handleClose = () => {
     setIsDrawerOpen(false)
     setReport(null)
+    setPollConfig(null)
     reset()
+    setErrorType(null)
     setActiveTab('accessibility')
   }
 
@@ -55,11 +90,6 @@ export default function App() {
       <header className="h-16 flex items-center px-6 shadow-sm" style={{ backgroundColor: '#ffffff' }}>
         <span className="text-black font-bold text-lg tracking-tight">
           <span style={{ color: '#065bd2' }}>W</span>ebYes
-        </span>
-        <span
-          className="ml-3 text-xs font-medium px-2 py-0.5 rounded-full"
-          style={{ backgroundColor: 'rgba(255,255,255,0.12)', color: '#94A3B8' }}
-        >
         </span>
       </header>
 
@@ -114,7 +144,7 @@ export default function App() {
         )}
 
         {/* Loading skeleton */}
-        {isPending && (
+        {isLoading && (
           <div className="space-y-6">
             <div className="bg-white rounded-2xl p-5" style={{ border: '1px solid #E2E8F0' }}>
               <div className="flex gap-4">
@@ -155,7 +185,7 @@ export default function App() {
               {activeTab === 'performance' && (
                 <CoreWebVitals metrics={report.metrics} filmstrip={report.filmstrip} />
               )}
-              <UpsellBanner />
+              <UpsellBanner tab={activeTab} score={report.categories[activeTab]?.score} />
               <IssueList issues={report.categories[activeTab].issues} tabKey={activeTab} />
               <PassedList passed={report.categories[activeTab].passed} />
             </CategoryTabs>
