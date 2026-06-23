@@ -1,28 +1,46 @@
-import { ArrowRight } from 'lucide-react'
+import { Check, ExternalLink } from 'lucide-react'
+
+const PILLS = ['Full site scan', 'AI-powered solutions', 'Built for teams']
 
 export default function BottomCTA() {
   return (
     <div
-      className="rounded-2xl px-6 py-10 flex flex-col items-center text-center gap-4"
-      style={{ backgroundColor: 'rgb(238, 242, 247)' }}
+      className="rounded-2xl px-6 py-12 flex flex-col items-center text-center gap-6"
+      style={{ backgroundColor: '#EEF2F7' }}
     >
-      <h1 className="text-xl font-bold text-black leading-snug max-w-sm">
-        <b>Fix what's slowing down your site</b>
-      </h1>
-      <p className="text-sm max-w-md leading-relaxed" style={{ color: '#000000' }}>
-        WebYes turns your audit results into a step-by-step action plan — so your team
-        knows exactly what to fix, in what order, and why it matters.
-      </p>
-      <button
-        className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold
-          text-white transition-opacity hover:opacity-90 mt-2"
+      <h2 className="text-2xl font-extrabold text-black leading-tight max-w-2xl">
+        Fix what's slowing down your site with a complete audit
+      </h2>
+
+      <div className="flex flex-wrap items-center justify-center gap-3">
+        {PILLS.map((label) => (
+          <span
+            key={label}
+            className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium bg-white"
+            style={{ border: '1px solid #E2E8F0', color: '#1E2B4A' }}
+          >
+            <span className="flex items-center justify-center w-5 h-5 rounded-full" style={{ backgroundColor: '#DCFCE7' }}>
+              <Check size={12} strokeWidth={3} style={{ color: '#22C55E' }} />
+            </span>
+            {label}
+          </span>
+        ))}
+      </div>
+
+      <a
+        href="https://app.webyes.com/login"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl text-sm font-bold text-white transition-opacity hover:opacity-90"
         style={{ backgroundColor: '#2563EB' }}
       >
-        Start fixing for free
-        <ArrowRight size={16} />
-      </button>
-      <p className="text-xs" style={{ color: '#475569' }}>
-        No credit card required
+        Get a free audit
+        <ExternalLink size={16} />
+      </a>
+
+      <p className="text-sm flex items-center gap-4" style={{ color: '#64748B' }}>
+        <span className="flex items-center gap-1.5"><Check size={14} /> 7-day free trial</span>
+        <span className="flex items-center gap-1.5"><Check size={14} /> Cancel anytime</span>
       </p>
     </div>
   )

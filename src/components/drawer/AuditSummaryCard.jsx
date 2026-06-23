@@ -108,7 +108,7 @@ export default function AuditSummaryCard({ report }) {
           <Bell size={18} className="shrink-0 mt-0.5" style={{ color: '#64748B' }} />
           <p className="text-sm leading-relaxed" style={{ color: '#64748B' }}>
             You're seeing results for just one page. To get a full-site audit report and uncover all critical issues,{' '}
-            <a href="#" className="font-semibold underline" style={{ color: '#2563EB' }}>sign up for free. ↗</a>
+            <a href="https://app.webyes.com/login" target="_blank" rel="noopener noreferrer" className="font-semibold underline" style={{ color: '#2563EB' }}>sign up for free. ↗</a>
           </p>
         </div>
       </div>
