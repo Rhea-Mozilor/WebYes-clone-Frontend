@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { AlertCircle } from 'lucide-react'
-import { guestScan, pollGuestScan } from './services/api'
+import { guestScan, pollGuestScan, authMe, authLogout, getToken, clearToken, setToken } from './services/api'
 import mockReport from './lib/mockReport'
 import URLInputForm from './components/home/URLInputForm'
 import DeviceSelector from './components/home/DeviceSelector'
@@ -26,6 +26,7 @@ const mockScanFn = () =>
 
 export default function App() {
   const [view, setView]                 = useState('home') // 'home' | 'login' | 'signup'
+  const [user, setUser]                 = useState(null)
   const [device, setDevice]             = useState('desktop')
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const [report, setReport]             = useState(null)
@@ -69,6 +70,25 @@ export default function App() {
     }
   }, [pollData])
 
+  // Restore session on mount
+  useEffect(() => {
+    if (getToken()) {
+      authMe().then(setUser).catch(() => clearToken())
+    }
+  }, [])
+
+  const handleLoginSuccess = (token, userData) => {
+    setToken(token)
+    setUser(userData)
+    setView('home')
+  }
+
+  const handleLogout = async () => {
+    try { await authLogout() } catch (_) {}
+    clearToken()
+    setUser(null)
+  }
+
   const isLoading = isPending || !!pollConfig
 
   const handleScan = (url) => {
@@ -87,8 +107,8 @@ export default function App() {
     setActiveTab('accessibility')
   }
 
-  if (view === 'login')  return <LoginPage  onNavigateSignup={() => setView('signup')} />
-  if (view === 'signup') return <SignupPage onNavigateLogin={() => setView('login')} />
+  if (view === 'login')  return <LoginPage  onLoginSuccess={handleLoginSuccess} onNavigateSignup={() => setView('signup')} />
+  if (view === 'signup') return <SignupPage onLoginSuccess={handleLoginSuccess} onNavigateLogin={() => setView('login')} />
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#EEF2F7' }}>
@@ -98,20 +118,37 @@ export default function App() {
           <span style={{ color: '#065bd2' }}>W</span>ebYes
         </span>
         <div className="flex items-center gap-3">
-          <button
-            onClick={() => setView('login')}
-            className="text-sm font-medium px-4 py-2 rounded-lg transition-colors hover:bg-gray-50"
-            style={{ color: '#1E2B4A', border: '1px solid #E2E8F0' }}
-          >
-            Sign in
-          </button>
-          <button
-            onClick={() => setView('signup')}
-            className="text-sm font-semibold px-4 py-2 rounded-lg text-white transition-opacity hover:opacity-90"
-            style={{ backgroundColor: '#2563EB' }}
-          >
-            Sign up
-          </button>
+          {user ? (
+            <>
+              <span className="text-sm font-medium" style={{ color: '#1E2B4A' }}>
+                {user.username || user.email}
+              </span>
+              <button
+                onClick={handleLogout}
+                className="text-sm font-medium px-4 py-2 rounded-lg transition-colors hover:bg-gray-50"
+                style={{ color: '#EF4444', border: '1px solid #E2E8F0' }}
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                onClick={() => setView('login')}
+                className="text-sm font-medium px-4 py-2 rounded-lg transition-colors hover:bg-gray-50"
+                style={{ color: '#1E2B4A', border: '1px solid #E2E8F0' }}
+              >
+                Sign in
+              </button>
+              <button
+                onClick={() => setView('signup')}
+                className="text-sm font-semibold px-4 py-2 rounded-lg text-white transition-opacity hover:opacity-90"
+                style={{ backgroundColor: '#2563EB' }}
+              >
+                Sign up
+              </button>
+            </>
+          )}
         </div>
       </header>
 

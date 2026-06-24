@@ -1,18 +1,35 @@
 import { useState } from 'react'
 import { Eye, EyeOff } from 'lucide-react'
 import AuthLeftPanel from './AuthLeftPanel'
+import { authSignup, authLogin, authMe, setToken } from '@/services/api'
 
-export default function SignupPage({ onNavigateLogin }) {
+export default function SignupPage({ onNavigateLogin, onLoginSuccess }) {
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName]   = useState('')
   const [email, setEmail]         = useState('')
   const [password, setPassword]   = useState('')
   const [showPw, setShowPw]       = useState(false)
   const [agreed, setAgreed]       = useState(false)
+  const [loading, setLoading]     = useState(false)
+  const [error, setError]         = useState(null)
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    // Auth integration goes here
+    setError(null)
+    setLoading(true)
+    try {
+      const username = `${firstName.trim()} ${lastName.trim()}`
+      await authSignup({ email, username, password })
+      // Auto-login after signup
+      const { access_token } = await authLogin({ email, password })
+      setToken(access_token)
+      const user = await authMe()
+      onLoginSuccess(access_token, user)
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Could not create account. Please try again.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   const inputStyle = {
@@ -60,7 +77,7 @@ export default function SignupPage({ onNavigateLogin }) {
                   onChange={(e) => setFirstName(e.target.value)}
                   placeholder="First name"
                   required
-                  className="w-full px-4 py-3 rounded-lg text-sm outline-none"
+                  className="w-full px-4 py-3 rounded-xs text-sm outline-solid"
                   style={inputStyle}
                   onFocus={focusStyle}
                   onBlur={blurStyle}
@@ -76,7 +93,7 @@ export default function SignupPage({ onNavigateLogin }) {
                   onChange={(e) => setLastName(e.target.value)}
                   placeholder="Last name"
                   required
-                  className="w-full px-4 py-3 rounded-lg text-sm outline-none"
+                  className="w-full px-4 py-3 rounded-xs text-sm outline-solid"
                   style={inputStyle}
                   onFocus={focusStyle}
                   onBlur={blurStyle}
@@ -94,7 +111,7 @@ export default function SignupPage({ onNavigateLogin }) {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Email"
                 required
-                className="w-full px-4 py-3 rounded-lg text-sm outline-none"
+                className="w-full px-4 py-3 rounded-xs text-sm outline-solid"
                 style={inputStyle}
                 onFocus={focusStyle}
                 onBlur={blurStyle}
@@ -112,7 +129,7 @@ export default function SignupPage({ onNavigateLogin }) {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Password"
                   required
-                  className="w-full px-4 py-3 pr-11 rounded-lg text-sm outline-none"
+                  className="w-full px-4 py-3 pr-11 rounded-xs text-sm outline-solid"
                   style={inputStyle}
                   onFocus={focusStyle}
                   onBlur={blurStyle}
@@ -143,13 +160,17 @@ export default function SignupPage({ onNavigateLogin }) {
               </span>
             </label>
 
+            {error && (
+              <p className="text-xs text-center" style={{ color: '#EF4444' }}>{error}</p>
+            )}
+
             <button
               type="submit"
-              disabled={!agreed}
-              className="w-full py-3 rounded-lg text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-50"
+              disabled={!agreed || loading}
+              className="w-full py-3 rounded-xs text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-50"
               style={{ backgroundColor: '#2563EB' }}
             >
-              Get Started
+              {loading ? 'Creating account…' : 'Get Started'}
             </button>
           </form>
 
@@ -161,7 +182,7 @@ export default function SignupPage({ onNavigateLogin }) {
 
           <button
             type="button"
-            className="w-full py-3 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-colors hover:bg-gray-50"
+            className="w-full py-3 rounded-xs text-sm font-medium flex items-center justify-center gap-2 transition-colors hover:bg-gray-50"
             style={{ border: '1px solid #E2E8F0', color: '#1E2B4A' }}
           >
             <svg width="18" height="18" viewBox="0 0 48 48">

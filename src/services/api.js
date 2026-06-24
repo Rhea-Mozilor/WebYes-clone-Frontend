@@ -3,6 +3,34 @@ import axios from 'axios'
 const BASE = import.meta.env.VITE_API_URL
 
 // ---------------------------------------------------------------------------
+// Auth helpers
+// ---------------------------------------------------------------------------
+const TOKEN_KEY = 'wy_access_token'
+export const getToken  = ()      => localStorage.getItem(TOKEN_KEY)
+export const setToken  = (token) => localStorage.setItem(TOKEN_KEY, token)
+export const clearToken = ()     => localStorage.removeItem(TOKEN_KEY)
+
+const authHeaders = () => {
+  const token = getToken()
+  return token ? { Authorization: `Bearer ${token}` } : {}
+}
+
+// ---------------------------------------------------------------------------
+// Auth API
+// ---------------------------------------------------------------------------
+export const authSignup = ({ email, username, password }) =>
+  axios.post(`${BASE}/api/auth/signup`, { email, username, password }).then((r) => r.data)
+
+export const authLogin = ({ email, password }) =>
+  axios.post(`${BASE}/api/auth/login`, { email, password }).then((r) => r.data)
+
+export const authMe = () =>
+  axios.get(`${BASE}/api/auth/me`, { headers: authHeaders() }).then((r) => r.data)
+
+export const authLogout = () =>
+  axios.post(`${BASE}/api/auth/logout`, {}, { headers: authHeaders() }).then((r) => r.data)
+
+// ---------------------------------------------------------------------------
 // Legacy stubs (kept for reference — not used by the guest flow)
 // ---------------------------------------------------------------------------
 export const startScan = ({ url, device }) =>

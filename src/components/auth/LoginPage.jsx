@@ -1,15 +1,29 @@
 import { useState } from 'react'
 import { Eye, EyeOff } from 'lucide-react'
 import AuthLeftPanel from './AuthLeftPanel'
+import { authLogin, authMe, setToken } from '@/services/api'
 
-export default function LoginPage({ onNavigateSignup }) {
+export default function LoginPage({ onNavigateSignup, onLoginSuccess }) {
   const [email, setEmail]       = useState('')
   const [password, setPassword] = useState('')
   const [showPw, setShowPw]     = useState(false)
+  const [loading, setLoading]   = useState(false)
+  const [error, setError]       = useState(null)
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    // Auth integration goes here
+    setError(null)
+    setLoading(true)
+    try {
+      const { access_token } = await authLogin({ email, password })
+      setToken(access_token)
+      const user = await authMe()
+      onLoginSuccess(access_token, user)
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Invalid email or password.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -41,7 +55,7 @@ export default function LoginPage({ onNavigateSignup }) {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="johndoe@businessemail.com"
                 required
-                className="w-full px-4 py-3 rounded-lg text-sm outline-none transition-colors"
+                className="w-full px-4 py-3 rounded-xs text-sm outline-solid transition-colors"
                 style={{ border: '1px solid #E2E8F0', color: '#1E2B4A' }}
                 onFocus={(e) => e.target.style.borderColor = '#2563EB'}
                 onBlur={(e) => e.target.style.borderColor = '#E2E8F0'}
@@ -57,7 +71,7 @@ export default function LoginPage({ onNavigateSignup }) {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••••••"
                   required
-                  className="w-full px-4 py-3 pr-11 rounded-lg text-sm outline-none transition-colors"
+                  className="w-full px-4 py-3 pr-11 rounded-xs text-sm outline-solid transition-colors"
                   style={{ border: '1px solid #E2E8F0', color: '#1E2B4A' }}
                   onFocus={(e) => e.target.style.borderColor = '#2563EB'}
                   onBlur={(e) => e.target.style.borderColor = '#E2E8F0'}
@@ -72,18 +86,23 @@ export default function LoginPage({ onNavigateSignup }) {
                 </button>
               </div>
               <div className="text-right">
-                <button type="button" className="text-xs font-medium" style={{ color: '#2563EB' }}>
+                <button type="button" className="text-xs font-medium" style={{ color: '#444141' }}>
                   Forgot password?
                 </button>
               </div>
             </div>
 
+            {error && (
+              <p className="text-xs text-center" style={{ color: '#EF4444' }}>{error}</p>
+            )}
+
             <button
               type="submit"
-              className="w-full py-3 rounded-lg text-sm font-semibold text-white transition-opacity hover:opacity-90 mt-2"
+              disabled={loading}
+              className="w-full py-3 rounded-xs text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-60 mt-2"
               style={{ backgroundColor: '#2563EB' }}
             >
-              Log in
+              {loading ? 'Signing in…' : 'Log in'}
             </button>
           </form>
 
@@ -95,7 +114,7 @@ export default function LoginPage({ onNavigateSignup }) {
 
           <button
             type="button"
-            className="w-full py-3 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-colors hover:bg-gray-50"
+            className="w-full py-3 rounded-xs text-sm font-medium flex items-center justify-center gap-2 transition-colors hover:bg-gray-50"
             style={{ border: '1px solid #E2E8F0', color: '#1E2B4A' }}
           >
             <svg width="18" height="18" viewBox="0 0 48 48">
