@@ -8,7 +8,6 @@ import DeviceSelector from './components/home/DeviceSelector'
 import ResultsDrawer from './components/drawer/ResultsDrawer'
 import LoginPage from './components/auth/LoginPage'
 import SignupPage from './components/auth/SignupPage'
-import DashboardPage from './components/dashboard/DashboardPage'
 import AuditSummaryCard from './components/drawer/AuditSummaryCard'
 import ScoreOverview from './components/drawer/ScoreOverview'
 import CategoryTabs from './components/drawer/CategoryTabs'
@@ -74,23 +73,20 @@ export default function App() {
   // Restore session on mount
   useEffect(() => {
     if (getToken()) {
-      authMe()
-        .then(userData => { setUser(userData); setView('dashboard') })
-        .catch(() => clearToken())
+      authMe().then(setUser).catch(() => clearToken())
     }
   }, [])
 
   const handleLoginSuccess = (token, userData) => {
     setToken(token)
     setUser(userData)
-    setView('dashboard')
+    setView('home')
   }
 
   const handleLogout = async () => {
     try { await authLogout() } catch (_) {}
     clearToken()
     setUser(null)
-    setView('home')
   }
 
   const isLoading = isPending || !!pollConfig
@@ -111,9 +107,8 @@ export default function App() {
     setActiveTab('accessibility')
   }
 
-  if (view === 'login')     return <LoginPage  onLoginSuccess={handleLoginSuccess} onNavigateSignup={() => setView('signup')} />
-  if (view === 'signup')    return <SignupPage onLoginSuccess={handleLoginSuccess} onNavigateLogin={() => setView('login')} />
-  if (view === 'dashboard') return <DashboardPage user={user} onLogout={handleLogout} />
+  if (view === 'login')  return <LoginPage  onLoginSuccess={handleLoginSuccess} onNavigateSignup={() => setView('signup')} />
+  if (view === 'signup') return <SignupPage onLoginSuccess={handleLoginSuccess} onNavigateLogin={() => setView('login')} />
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#EEF2F7' }}>
