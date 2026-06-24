@@ -525,26 +525,52 @@ function perfPage2HTML(report) {
    RENDERER + PDF EXPORT
    ═══════════════════════════════════════════════════════════════════════════ */
 async function renderPage(htmlString) {
-  const wrap = document.createElement('div')
-  wrap.style.cssText = 'position:absolute;left:-9999px;top:0;z-index:-1;'
-  wrap.innerHTML = htmlString
-  document.body.appendChild(wrap)
-  const el = wrap.firstElementChild
-  let canvas
-  try {
-    canvas = await html2canvas(el, {
-      scale:       2,
-      useCORS:     true,
-      allowTaint:  true,
-      logging:     false,
-      width:       794,
-      height:      1123,
-      windowWidth: 1400,
+  return new Promise((resolve, reject) => {
+    // Render inside an isolated iframe so Tailwind's oklch() colors are never loaded
+    const iframe = document.createElement('iframe')
+    Object.assign(iframe.style, {
+      position:   'fixed',
+      left:       '-9999px',
+      top:        '0',
+      width:      '794px',
+      height:     '1123px',
+      border:     'none',
+      visibility: 'hidden',
     })
-  } finally {
-    document.body.removeChild(wrap)
-  }
-  return canvas
+    document.body.appendChild(iframe)
+
+    iframe.onload = async () => {
+      // Wait for fonts to load inside the iframe
+      try { await iframe.contentDocument.fonts.ready } catch (_) {}
+      try {
+        const el = iframe.contentDocument.body.firstElementChild
+        const canvas = await html2canvas(el, {
+          scale:       2,
+          useCORS:     true,
+          allowTaint:  true,
+          logging:     false,
+          width:       794,
+          height:      1123,
+          windowWidth: 794,
+        })
+        resolve(canvas)
+      } catch (err) {
+        reject(err)
+      } finally {
+        document.body.removeChild(iframe)
+      }
+    }
+
+    const doc = iframe.contentDocument
+    doc.open()
+    doc.write(`<!DOCTYPE html><html><head><meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=block" rel="stylesheet">
+<style>*{box-sizing:border-box;}body{margin:0;padding:0;font-family:'Inter',Arial,sans-serif;}</style>
+</head><body>${htmlString}</body></html>`)
+    doc.close()
+  })
 }
 
 export async function generatePDFReport(report) {
@@ -613,8 +639,8 @@ function adaptReport(report) {
       passed:   cat.passedChecks ?? 0,
       items: (cat.issues || []).map(i => ({
         title:        i.title        || '',
-        description:  i.displayValue || '',
-        learnMoreUrl: '',
+        description:  i.description  || i.displayValue || '',
+        learnMoreUrl: i.learnMoreUrl || '',
       })),
     }
   }

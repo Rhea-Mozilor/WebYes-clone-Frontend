@@ -32,11 +32,15 @@ const mockReport = {
         {
           id: 'a1',
           title: 'Uses ARIA roles on incompatible elements',
+          description: 'ARIA roles must be used on elements that support them. Applying roles to incompatible elements can confuse assistive technologies.',
+          learnMoreUrl: 'https://dequeuniversity.com/rules/axe/4.12/aria-allowed-role',
           failingElements: 3,
         },
         {
           id: 'a2',
           title: 'Buttons do not have an accessible name',
+          description: 'When a button doesn\'t have an accessible name, screen readers announce it as "button", making it unusable for screen reader users.',
+          learnMoreUrl: 'https://dequeuniversity.com/rules/axe/4.12/button-name',
           failingElements: 2,
         },
       ],
@@ -61,6 +65,8 @@ const mockReport = {
         {
           id: 'p1',
           title: 'Serve images in next-gen formats',
+          description: 'Image formats like WebP and AVIF often provide better compression than PNG or JPEG, which means faster downloads and less data consumption.',
+          learnMoreUrl: 'https://developer.chrome.com/docs/lighthouse/performance/uses-webp-images/',
           failingElements: 5,
         },
       ],
@@ -86,6 +92,8 @@ const mockReport = {
         {
           id: 'q1',
           title: 'Uses deprecated APIs',
+          description: 'Deprecated APIs will eventually be removed from the browser. Migrate to recommended alternatives to avoid breakage.',
+          learnMoreUrl: 'https://developer.chrome.com/docs/lighthouse/best-practices/deprecations/',
           failingElements: 1,
         },
       ],
@@ -110,6 +118,8 @@ const mockReport = {
         {
           id: 's1',
           title: 'Image elements do not have explicit `width` and `height`',
+          description: 'Set an explicit width and height on image elements to reduce layout shifts and improve CLS.',
+          learnMoreUrl: 'https://developer.chrome.com/docs/lighthouse/best-practices/uses-optimized-images/',
           failingElements: 4,
         },
       ],

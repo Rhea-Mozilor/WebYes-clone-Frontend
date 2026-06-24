@@ -8,16 +8,21 @@ export default function ShareModal({ report, onClose }) {
   const [agreed, setAgreed] = useState(false)
   const [sent, setSent] = useState(false)
   const [generating, setGenerating] = useState(false)
+  const [pdfError, setPdfError] = useState(null)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!email) return
+    setPdfError(null)
     setGenerating(true)
     try {
       await generatePDFFromReport(report)
+      setSent(true)
+    } catch (err) {
+      console.error('PDF generation failed:', err)
+      setPdfError('Failed to generate PDF. Please try again.')
     } finally {
       setGenerating(false)
-      setSent(true)
     }
   }
 
@@ -162,6 +167,10 @@ export default function ShareModal({ report, onClose }) {
                   I agree to receive educational and product related emails from WebYes.
                 </span>
               </label>
+
+              {pdfError && (
+                <p className="text-sm" style={{ color: '#EF4444' }}>{pdfError}</p>
+              )}
 
               <button
                 type="submit"
