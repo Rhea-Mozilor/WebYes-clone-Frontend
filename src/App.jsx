@@ -6,6 +6,8 @@ import mockReport from './lib/mockReport'
 import URLInputForm from './components/home/URLInputForm'
 import DeviceSelector from './components/home/DeviceSelector'
 import ResultsDrawer from './components/drawer/ResultsDrawer'
+import LoginPage from './components/auth/LoginPage'
+import SignupPage from './components/auth/SignupPage'
 import AuditSummaryCard from './components/drawer/AuditSummaryCard'
 import ScoreOverview from './components/drawer/ScoreOverview'
 import CategoryTabs from './components/drawer/CategoryTabs'
@@ -23,6 +25,7 @@ const mockScanFn = () =>
   new Promise((resolve) => setTimeout(() => resolve(mockReport), 1500))
 
 export default function App() {
+  const [view, setView]                 = useState('home') // 'home' | 'login' | 'signup'
   const [device, setDevice]             = useState('desktop')
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const [report, setReport]             = useState(null)
@@ -84,13 +87,32 @@ export default function App() {
     setActiveTab('accessibility')
   }
 
+  if (view === 'login')  return <LoginPage  onNavigateSignup={() => setView('signup')} />
+  if (view === 'signup') return <SignupPage onNavigateLogin={() => setView('login')} />
+
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#EEF2F7' }}>
       {/* Nav */}
-      <header className="h-16 flex items-center px-6 shadow-sm" style={{ backgroundColor: '#ffffff' }}>
+      <header className="h-16 flex items-center justify-between px-6 shadow-sm" style={{ backgroundColor: '#ffffff' }}>
         <span className="text-black font-bold text-lg tracking-tight">
           <span style={{ color: '#065bd2' }}>W</span>ebYes
         </span>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setView('login')}
+            className="text-sm font-medium px-4 py-2 rounded-lg transition-colors hover:bg-gray-50"
+            style={{ color: '#1E2B4A', border: '1px solid #E2E8F0' }}
+          >
+            Sign in
+          </button>
+          <button
+            onClick={() => setView('signup')}
+            className="text-sm font-semibold px-4 py-2 rounded-lg text-white transition-opacity hover:opacity-90"
+            style={{ backgroundColor: '#2563EB' }}
+          >
+            Sign up
+          </button>
+        </div>
       </header>
 
       {/* Hero */}
