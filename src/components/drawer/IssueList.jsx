@@ -10,7 +10,7 @@ export default function IssueList({ issues, tabKey = 'accessibility' }) {
   const hidden  = issues.length - visible.length
 
   return (
-    <div className="rounded-xl overflow-hidden" style={{ border: '1px solid #E2E8F0' }}>
+    <div className="rounded-lg overflow-hidden" style={{ border: '1px solid #E2E8F0' }}>
       {/* Header */}
       <div
         className="flex items-center justify-between px-4 py-2.5"
@@ -76,7 +76,7 @@ export default function IssueList({ issues, tabKey = 'accessibility' }) {
               href="https://www.webyes.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold text-white"
+              className="flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-semibold text-white"
               style={{ backgroundColor: '#2563EB' }}
             >
               Unlock complete audit <ExternalLink size={20} />

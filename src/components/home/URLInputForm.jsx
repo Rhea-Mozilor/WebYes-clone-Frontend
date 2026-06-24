@@ -26,7 +26,7 @@ export default function URLInputForm({ onSubmit, isPending }) {
           placeholder="Enter website URL (e.g. https://example.com)"
           required
           disabled={isPending}
-          className="w-full h-12 pl-10 pr-4 rounded-xl border text-sm outline-none transition-all
+          className="w-full h-12 pl-10 pr-4 rounded-lg border text-sm outline-none transition-all
             focus:ring-2 focus:ring-[#2563EB] focus:border-[#2563EB]
             disabled:opacity-50 disabled:cursor-not-allowed"
           style={{
@@ -40,7 +40,7 @@ export default function URLInputForm({ onSubmit, isPending }) {
       <button
         type="submit"
         disabled={isPending || !url.trim()}
-        className="h-12 px-6 rounded-xl text-sm font-semibold text-white flex items-center
+        className="h-12 px-6 rounded-lg text-sm font-semibold text-white flex items-center
           justify-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed
           hover:opacity-90 active:scale-95 shrink-0"
         style={{ backgroundColor: '#2563EB' }}

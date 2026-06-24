@@ -90,7 +90,7 @@ const transformResponse = (data, device) => {
     scanId:       `guest-${Date.now()}`,
     url:          data.url,
     device:       device || data.strategy,
-    screenshot:   ss.final || null,
+    screenshot:   ss.full_page || ss.final || null,
     location:     null,
     scannedAt:    data.fetch_time || data.fetchTime || new Date().toISOString(),
     overallScore: Math.round((perf + a11y + qual + seo) / 4),

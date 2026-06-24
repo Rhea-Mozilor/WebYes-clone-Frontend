@@ -94,9 +94,9 @@ export default function App() {
       </header>
 
       {/* Hero */}
-      <main className="flex flex-col items-center justify-center px-4 pt-20 pb-16">
+      <main className="flex flex-col items-center justify-center px-4 pt-10 sm:pt-20 pb-16">
         <div className="max-w-2xl w-full text-center mb-10">
-          <h1 className="text-4xl font-extrabold mb-3 leading-tight" style={{ color: '#1E2B4A' }}>
+          <h1 className="text-2xl sm:text-4xl font-extrabold mb-3 leading-tight" style={{ color: '#1E2B4A' }}>
             Is your website accessible?
           </h1>
           <p className="text-base" style={{ color: '#64748B' }}>
@@ -106,7 +106,7 @@ export default function App() {
         </div>
 
         <div
-          className="w-full max-w-2xl bg-white rounded-2xl shadow-md p-6"
+          className="w-full max-w-2xl bg-white rounded-lg shadow-md p-6"
           style={{ border: '1px solid #E2E8F0' }}
         >
           <URLInputForm onSubmit={handleScan} isPending={isPending} />
@@ -135,7 +135,7 @@ export default function App() {
             </div>
             <button
               onClick={handleClose}
-              className="mt-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white"
+              className="mt-2 px-5 py-2.5 rounded-lg text-sm font-semibold text-white"
               style={{ backgroundColor: '#2563EB' }}
             >
               Try again
@@ -146,23 +146,23 @@ export default function App() {
         {/* Loading skeleton */}
         {isLoading && (
           <div className="space-y-6">
-            <div className="bg-white rounded-2xl p-5" style={{ border: '1px solid #E2E8F0' }}>
+            <div className="bg-white rounded-lg p-5" style={{ border: '1px solid #E2E8F0' }}>
               <div className="flex gap-4">
-                <div className="w-28 h-20 rounded-xl animate-pulse shrink-0" style={{ backgroundColor: '#E2E8F0' }} />
+                <div className="w-28 h-20 rounded-lg animate-pulse shrink-0" style={{ backgroundColor: '#E2E8F0' }} />
                 <div className="flex-1 space-y-3 pt-1">
                   <SkeletonLoader rows={3} />
                 </div>
               </div>
             </div>
-            <div className="bg-white rounded-2xl p-6" style={{ border: '1px solid #E2E8F0' }}>
+            <div className="bg-white rounded-lg p-6" style={{ border: '1px solid #E2E8F0' }}>
               <div className="flex gap-8 items-center">
-                <div className="w-36 h-36 rounded-full animate-pulse shrink-0" style={{ backgroundColor: '#E2E8F0' }} />
+                <div className="w-36 h-36 rounded-lg animate-pulse shrink-0" style={{ backgroundColor: '#E2E8F0' }} />
                 <div className="flex-1 space-y-4">
                   <SkeletonLoader rows={4} />
                 </div>
               </div>
             </div>
-            <div className="bg-white rounded-2xl p-5" style={{ border: '1px solid #E2E8F0' }}>
+            <div className="bg-white rounded-lg p-5" style={{ border: '1px solid #E2E8F0' }}>
               <SkeletonLoader rows={6} />
             </div>
             <p className="text-center text-sm animate-pulse" style={{ color: '#64748B' }}>

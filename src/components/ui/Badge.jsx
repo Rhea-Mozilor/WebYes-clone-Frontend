@@ -8,7 +8,7 @@ export default function Badge({ variant = 'passed', children }) {
   const { bg, color, label } = variants[variant] ?? variants.passed
   return (
     <span
-      className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+      className="inline-flex items-center px-2.5 py-0.5 rounded-lg text-xs font-medium"
       style={{ backgroundColor: bg, color }}
     >
       {children ?? label}

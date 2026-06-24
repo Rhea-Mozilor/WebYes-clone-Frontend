@@ -17,7 +17,7 @@ function MetricCard({ label, metric }) {
   const color = metricColor(metric?.score)
   return (
     <div
-      className="flex flex-col gap-3 rounded-xl p-4"
+      className="flex flex-col gap-3 rounded-lg p-4"
       style={{ backgroundColor: '#FFFFFF', border: '1px solid #E2E8F0', minWidth: 0 }}
     >
       <span className="text-sm leading-snug" style={{ color: '#64748B' }}>{label}</span>
@@ -34,14 +34,14 @@ export default function CoreWebVitals({ metrics = {}, filmstrip = [] }) {
 
   return (
     <div
-      className="rounded-2xl p-5 space-y-4"
+      className="rounded-lg p-5 space-y-4"
       style={{ backgroundColor: '#FFFFFF', border: '1px solid #E2E8F0' }}
     >
       <h3 className="text-base font-bold" style={{ color: '#1E2B4A' }}>Core web vitals</h3>
 
       {/* Inner sub-container */}
       <div
-        className="rounded-xl p-5 space-y-6"
+        className="rounded-lg p-5 space-y-6"
         style={{ backgroundColor: '#F8FAFC', border: '1px solid #E2E8F0' }}
       >
         {/* All 5 metrics in one row */}
@@ -53,29 +53,27 @@ export default function CoreWebVitals({ metrics = {}, filmstrip = [] }) {
           </div>
         )}
 
-        {/* Filmstrip — timing labels above, images below */}
+        {/* Filmstrip — timing labels above, images below, max 8 frames */}
         {filmstrip.length > 0 && (
-          <div className="overflow-x-auto">
-            <div className="flex gap-3" style={{ minWidth: 'max-content' }}>
-              {filmstrip.map((frame, i) => {
-                const secs = (frame.timing / 1000).toFixed(2) + 's'
-                return (
-                  <div key={i} className="flex flex-col items-start shrink-0" style={{ width: 148 }}>
-                    <span className="text-xs mb-1.5" style={{ color: '#64748B' }}>{secs}</span>
-                    <div
-                      className="rounded-lg overflow-hidden w-full"
-                      style={{ border: '1px solid #E2E8F0', height: 88 }}
-                    >
-                      <img
-                        src={frame.data}
-                        alt={secs}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
+          <div className="grid gap-2" style={{ gridTemplateColumns: 'repeat(8, 1fr)' }}>
+            {filmstrip.slice(0, 8).map((frame, i) => {
+              const secs = (frame.timing / 1000).toFixed(2) + 's'
+              return (
+                <div key={i} className="flex flex-col items-start min-w-0">
+                  <span className="text-xs mb-1.5 truncate w-full" style={{ color: '#64748B' }}>{secs}</span>
+                  <div
+                    className="rounded-lg overflow-hidden w-full flex items-center justify-center"
+                    style={{ border: '1px solid #E2E8F0', aspectRatio: '4/3', backgroundColor: '#ffffff' }}
+                  >
+                    <img
+                      src={frame.data}
+                      alt={secs}
+                      className="w-full h-full object-contain"
+                    />
                   </div>
-                )
-              })}
-            </div>
+                </div>
+              )
+            })}
           </div>
         )}
       </div>

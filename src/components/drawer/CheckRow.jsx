@@ -99,7 +99,7 @@ function GenericRow({ item, cols, colLabel, cellVal, isUrlCol, gridCols }) {
         })}
         {/* Chevron */}
         <span
-          className="w-6 h-6 rounded-full flex items-center justify-center shrink-0"
+          className="w-6 h-6 rounded-lg flex items-center justify-center shrink-0"
           style={{
             border: '1.5px solid #E2E8F0',
             transform: open ? 'rotate(180deg)' : 'rotate(0deg)',
@@ -276,7 +276,7 @@ function NetworkTreeNode({ node, depth = 0 }) {
         <span>
           {node.isLongest && (
             <span
-              className="text-xs font-semibold px-2 py-0.5 rounded-full"
+              className="text-xs font-semibold px-2 py-0.5 rounded-lg"
               style={{ backgroundColor: '#FEF3C7', color: '#D97706' }}
             >
               Longest
@@ -603,7 +603,7 @@ export default function CheckRow({
         {/* displayValue badge for non-accessibility */}
         {isIssue && !isAccessibility && displayValue && (
           <span
-            className="shrink-0 text-xs font-semibold px-2.5 py-0.5 rounded-full"
+            className="shrink-0 text-xs font-semibold px-2.5 py-0.5 rounded-lg"
             style={{ backgroundColor: '#FEF3C7', color: '#B45309' }}
           >
             {displayValue}
@@ -612,7 +612,7 @@ export default function CheckRow({
 
         {isIssue && failingElements != null && failingElements > 0 && (
           <span
-            className="shrink-0 text-xs font-semibold px-2.5 py-0.5 rounded-full"
+            className="shrink-0 text-xs font-semibold px-2.5 py-0.5 rounded-lg"
             style={{ backgroundColor: '#FEE2E2', color: '#EF4444' }}
           >
             {failingElements} {failingElements === 1 ? 'element' : 'elements'}
@@ -620,7 +620,7 @@ export default function CheckRow({
         )}
 
         <span
-          className="shrink-0 w-6 h-6 rounded-full flex items-center justify-center"
+          className="shrink-0 w-6 h-6 rounded-lg flex items-center justify-center"
           style={{
             border: '1.5px solid #E2E8F0',
             transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
@@ -667,7 +667,7 @@ export default function CheckRow({
           {/* ── Accessibility: simple failing elements list ── */}
           {isIssue && isAccessibility && elementRows.length > 0 && (
             <div className="px-5 pb-5">
-              <div className="rounded-xl overflow-hidden" style={{ border: '1px solid #E2E8F0', backgroundColor: '#FFFFFF' }}>
+              <div className="rounded-lg overflow-hidden" style={{ border: '1px solid #E2E8F0', backgroundColor: '#FFFFFF' }}>
                 {/* Header */}
                 <div
                   className="grid px-4 py-2.5 text-xs font-semibold"
@@ -697,7 +697,7 @@ export default function CheckRow({
           {isIssue && !isAccessibility && items.length > 0 && (
             <div className="px-5 pb-5">
               <div
-                className="rounded-xl overflow-hidden"
+                className="rounded-lg overflow-hidden"
                 style={{ border: '1px solid #E2E8F0', backgroundColor: '#FFFFFF' }}
               >
                 {isNetworkTree

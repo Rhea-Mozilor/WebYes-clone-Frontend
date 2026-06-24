@@ -20,14 +20,14 @@ function tagline(score) {
 
 export default function ScoreOverview({ overallScore, scores }) {
   return (
-    <div className="flex gap-4">
+    <div className="flex flex-col sm:flex-row gap-10">
       {/* Left card — donut */}
       <div
-        className="bg-white rounded-2xl flex flex-col items-start gap-4 p-7 min-h-[390px] flex-1"
+        className="bg-white rounded-lg flex flex-col items-start gap-4 p-7 sm:min-h-[390px] flex-1"
         style={{ border: '1px solid #E2E8F0' }}
       >
         <div className="flex items-center gap-1.5">
-          <span className="text-base font-semibold" style={{ color: '#1E2B4A' }}>Webpage health score</span>
+          <span className="text-xl font-semibold" style={{ color: '#1E2B4A' }}>Webpage health score</span>
           <CircleHelp size={15} style={{ color: '#94A3B8' }} />
         </div>
 
@@ -35,14 +35,14 @@ export default function ScoreOverview({ overallScore, scores }) {
           <DonutGauge score={overallScore} size={220} />
         </div>
 
-        <p className="text-xs text-center leading-relaxed w-full" style={{ color: '#64748B' }}>
+        <p className="text-lg font-semibold text-center leading-relaxed w-full" style={{ color: '#64748B' }}>
           {tagline(overallScore)}
         </p>
       </div>
 
       {/* Right card — category bars */}
       <div
-        className="bg-white rounded-2xl flex-1 p-7 flex flex-col justify-between gap-2 min-h-[390px]"
+        className="bg-white rounded-lg flex-1 p-8 flex flex-col gap-6 sm:min-h-[390px]"
         style={{ border: '1px solid #E2E8F0' }}
       >
         {CATEGORIES.map(({ key, label, Icon }) => {
@@ -50,12 +50,12 @@ export default function ScoreOverview({ overallScore, scores }) {
           const color = scoreColor(score)
           return (
             <div key={key}>
-              <div className="flex items-center justify-between mb-1.5">
-                <div className="flex items-center gap-2">
-                  <Icon size={17} style={{ color: '#64748B' }} />
-                  <span className="text-base font-semibold" style={{ color: '#1E2B4A' }}>{label}</span>
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2.5">
+                  <Icon size={19} style={{ color: '#1E2B4A' }} />
+                  <span className="text-base font-semibold" style={{ color: '#213561' }}>{label}</span>
                 </div>
-                <span className="text-base font-bold" style={{ color }}>{score}%</span>
+                <span className="text-lg font-semibold" style={{ color: '#213561' }}>{score}%</span>
               </div>
               <ProgressBar score={score} color={color} />
             </div>

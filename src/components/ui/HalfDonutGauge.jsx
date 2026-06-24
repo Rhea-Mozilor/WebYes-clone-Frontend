@@ -6,8 +6,8 @@ export default function HalfDonutGauge({ score, size = 50 }) {
   const color = scoreColor(score)
   const track = color === '#F97316' ? '#FEE9D4' : '#DBEAFE'
   const data = [{ value: score }, { value: 100 - score }]
-  const innerRadius = size * 0.36
-  const outerRadius = size * 0.48
+  const innerRadius = size * 0.30
+  const outerRadius = size * 0.40
   const chartHeight = size / 2 + outerRadius * 0.15
 
   return (
@@ -29,9 +29,9 @@ export default function HalfDonutGauge({ score, size = 50 }) {
         </Pie>
       </PieChart>
       <span
-        className="absolute font-bold leading-none"
+        className="absolute font-semibold leading-none"
         style={{
-          fontSize: size * 0.2,
+          fontSize: size * 0.18,
           color,
           bottom: 0,
           left: '55%',

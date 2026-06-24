@@ -9,9 +9,9 @@ const TABS = [
 
 export default function CategoryTabs({ categories, activeTab, onTabChange, children }) {
   return (
-    <div className="bg-white rounded-2xl overflow-hidden" style={{ border: '1px solid #E2E8F0' }}>
+    <div className="rounded-lg overflow-hidden" style={{ border: '1px solid #EEF2F7' }}>
       {/* Tab bar */}
-      <div className="flex overflow-x-auto" style={{ borderBottom: '1px solid #E2E8F0' }}>
+      <div className="flex overflow-x-auto" style={{ backgroundColor: '#EEF2F7' }}>
         {TABS.map(({ key, label, Icon }) => {
           const active = activeTab === key
           const issueCount = categories[key]?.issuesFound ?? 0
@@ -20,21 +20,19 @@ export default function CategoryTabs({ categories, activeTab, onTabChange, child
             <button
               key={key}
               onClick={() => onTabChange(key)}
-              className="flex items-center gap-2 px-7 py-5 text-base whitespace-nowrap transition-colors shrink-0 border-b-2"
+              className="flex items-center gap-2 px-20 py-6 rounded-t-lg sm:py-7 text-base sm:text-lg whitespace-nowrap transition-colors shrink-0 border-t-6"
               style={{
-                borderBottomColor: active ? '#2563EB' : 'transparent',
-                color: active ? '#2563EB' : '#64748B',
-                fontWeight: active ? 600 : 400,
+                borderTopColor: active ? '#2563EB' : 'transparent',
+                backgroundColor: active ? '#ffffff' : 'transparent',
+                color: '#000000',
+                fontWeight: active ? 700 : 500,
               }}
             >
-              <Icon size={17} />
+              <Icon size={20} style={{ color: '#000000' }} />
               {label}
               {issueCount > 0 && (
-                <span
-                  className="inline-flex items-center gap-0.5 text-xs font-semibold"
-                  style={{ color: '#F97316' }}
-                >
-                  (⚠️{issueCount})
+                <span className="text-base font-semibold" style={{ color: '#F97316' }}>
+                  (△{issueCount})
                 </span>
               )}
             </button>
@@ -43,7 +41,7 @@ export default function CategoryTabs({ categories, activeTab, onTabChange, child
       </div>
 
       {/* Active tab content */}
-      <div className="p-5 space-y-6">
+      <div className="p-5 space-y-6" style={{ backgroundColor: '#ffffff' }}>
         {children}
       </div>
     </div>

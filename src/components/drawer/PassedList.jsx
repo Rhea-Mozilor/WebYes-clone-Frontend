@@ -4,7 +4,7 @@ export default function PassedList({ passed }) {
   if (!passed?.length) return null
 
   return (
-    <div className="rounded-xl overflow-hidden" style={{ border: '1px solid #E2E8F0' }}>
+    <div className="rounded-lg overflow-hidden" style={{ border: '1px solid #E2E8F0' }}>
       {/* Header */}
       <div
         className="flex items-center gap-1.5 px-4 py-2.5"

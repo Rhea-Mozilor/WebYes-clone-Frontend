@@ -8,7 +8,7 @@ const OPTIONS = [
 export default function DeviceSelector({ value, onChange }) {
   return (
     <div
-      className="inline-flex rounded-xl p-1 gap-1"
+      className="inline-flex rounded-lg p-1 gap-1"
       style={{ backgroundColor: '#E2E8F0' }}
     >
       {OPTIONS.map(({ value: opt, label, Icon }) => {

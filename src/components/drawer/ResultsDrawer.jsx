@@ -1,3 +1,4 @@
+import { X } from 'lucide-react'
 import { Sheet, SheetContent } from '@/components/ui/sheet'
 import DrawerHeader from './DrawerHeader'
 
@@ -7,11 +8,21 @@ export default function ResultsDrawer({ isOpen, onClose, children }) {
       <SheetContent
         side="bottom"
         showCloseButton={false}
-        className="p-0 gap-0 rounded-none flex flex-col"
+        className="p-0 gap-0 rounded-lg overflow-hidden flex flex-col"
       >
-        <DrawerHeader onClose={onClose} />
-        <div className="flex-1 overflow-y-auto" style={{ backgroundColor: '#EEF2F7' }}>
-          <div className="max-w-screen-2xl mx-auto px-16 sm:px-20 py-10 space-y-6">
+        <div className="flex-1 overflow-y-auto relative" style={{ backgroundColor: '#EEF2F7' }}>
+          {/* Close button — pinned to top-right of drawer */}
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-6 flex items-center justify-center w-9 h-9 rounded-full transition-opacity hover:opacity-80 z-10"
+            style={{ backgroundColor: '#2563EB', color: '#ffffff' }}
+            aria-label="Close report"
+          >
+            <X size={18} />
+          </button>
+
+          <div className="max-w-screen-2xl mx-auto px-8 sm:px-16 lg:px-32 pt-4 pb-10 space-y-6">
+            <DrawerHeader onClose={onClose} />
             {children}
           </div>
         </div>

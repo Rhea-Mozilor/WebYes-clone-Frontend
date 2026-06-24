@@ -41,7 +41,7 @@ export default function UpsellBanner({ tab = 'accessibility', score }) {
 
   return (
     <div
-      className="rounded-2xl p-8 text-center"
+      className="rounded-lg p-8 text-center"
       style={{ backgroundColor: styles.bg, border: `1px solid ${styles.border}` }}
     >
       <h3 className="text-lg font-bold mb-2" style={{ color: styles.heading }}>
@@ -54,7 +54,7 @@ export default function UpsellBanner({ tab = 'accessibility', score }) {
         href="https://www.webyes.com"
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold text-white transition-opacity hover:opacity-90"
+        className="inline-flex items-center gap-2 px-6 py-3 rounded-lg text-sm font-semibold text-white transition-opacity hover:opacity-90"
         style={{ backgroundColor: '#2563EB' }}
       >
         Ensure full compliance ↗
