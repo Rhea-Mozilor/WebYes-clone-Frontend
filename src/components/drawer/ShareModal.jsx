@@ -1,16 +1,24 @@
 import { useState } from 'react'
 import { X } from 'lucide-react'
 import { Dialog, DialogContent } from '@/components/ui/dialog'
+import { generatePDFFromReport } from '@/lib/reportGenerator'
 
-export default function ShareModal({ onClose }) {
+export default function ShareModal({ report, onClose }) {
   const [email, setEmail] = useState('')
   const [agreed, setAgreed] = useState(false)
   const [sent, setSent] = useState(false)
+  const [generating, setGenerating] = useState(false)
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     if (!email) return
-    setSent(true)
+    setGenerating(true)
+    try {
+      await generatePDFFromReport(report)
+    } finally {
+      setGenerating(false)
+      setSent(true)
+    }
   }
 
   return (
@@ -157,10 +165,11 @@ export default function ShareModal({ onClose }) {
 
               <button
                 type="submit"
-                className="w-full py-4 rounded-sm text-white text-base font-semibold transition-opacity hover:opacity-90"
+                disabled={generating}
+                className="w-full py-4 rounded-sm text-white text-base font-semibold transition-opacity hover:opacity-90 disabled:opacity-70"
                 style={{ backgroundColor: '#2563EB' }}
               >
-                Send to my inbox
+                {generating ? 'Generating PDF…' : 'Send to my inbox'}
               </button>
             </div>
           </form>

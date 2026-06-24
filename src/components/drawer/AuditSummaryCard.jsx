@@ -22,7 +22,7 @@ export default function AuditSummaryCard({ report }) {
       className="bg-white rounded-sm flex flex-col sm:flex-row gap-0 items-stretch overflow-hidden"
       style={{ border: '1px solid #E2E8F0' }}
     >
-      {showShare && <ShareModal onClose={() => setShowShare(false)} />}
+      {showShare && <ShareModal report={report} onClose={() => setShowShare(false)} />}
 
       {/* Screenshot */}
       <div
