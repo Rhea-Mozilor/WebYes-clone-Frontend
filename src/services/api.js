@@ -30,9 +30,6 @@ export const authMe = () =>
 export const authLogout = () =>
   axios.post(`${BASE}/api/auth/logout`, {}, { headers: authHeaders() }).then((r) => r.data)
 
-export const authGoogleLogin = (googleAccessToken) =>
-  axios.post(`${BASE}/api/auth/google`, { access_token: googleAccessToken }).then((r) => r.data)
-
 // ---------------------------------------------------------------------------
 // Legacy stubs (kept for reference — not used by the guest flow)
 // ---------------------------------------------------------------------------

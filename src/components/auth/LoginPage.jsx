@@ -1,8 +1,7 @@
 import { useState } from 'react'
 import { Eye, EyeOff } from 'lucide-react'
-import { useGoogleLogin } from '@react-oauth/google'
 import AuthLeftPanel from './AuthLeftPanel'
-import { authLogin, authMe, authGoogleLogin, setToken } from '@/services/api'
+import { authLogin, authMe, setToken } from '@/services/api'
 
 export default function LoginPage({ onNavigateSignup, onLoginSuccess }) {
   const [email, setEmail]       = useState('')
@@ -10,24 +9,6 @@ export default function LoginPage({ onNavigateSignup, onLoginSuccess }) {
   const [showPw, setShowPw]     = useState(false)
   const [loading, setLoading]   = useState(false)
   const [error, setError]       = useState(null)
-
-  const googleLogin = useGoogleLogin({
-    onSuccess: async (tokenResponse) => {
-      setError(null)
-      setLoading(true)
-      try {
-        const { access_token } = await authGoogleLogin(tokenResponse.access_token)
-        setToken(access_token)
-        const user = await authMe()
-        onLoginSuccess(access_token, user)
-      } catch (err) {
-        setError(err.response?.data?.detail || 'Google sign-in failed. Please try again.')
-      } finally {
-        setLoading(false)
-      }
-    },
-    onError: () => setError('Google sign-in was cancelled or failed.'),
-  })
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -133,9 +114,7 @@ export default function LoginPage({ onNavigateSignup, onLoginSuccess }) {
 
           <button
             type="button"
-            onClick={() => googleLogin()}
-            disabled={loading}
-            className="w-full py-3 rounded-xs text-sm font-medium flex items-center justify-center gap-2 transition-colors hover:bg-gray-50 disabled:opacity-50"
+            className="w-full py-3 rounded-xs text-sm font-medium flex items-center justify-center gap-2 transition-colors hover:bg-gray-50"
             style={{ border: '1px solid #E2E8F0', color: '#1E2B4A' }}
           >
             <svg width="18" height="18" viewBox="0 0 48 48">
