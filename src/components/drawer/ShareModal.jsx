@@ -9,6 +9,7 @@ export default function ShareModal({ report, onClose }) {
   const [sent, setSent] = useState(false)
   const [generating, setGenerating] = useState(false)
   const [pdfError, setPdfError] = useState(null)
+  const [pdfUrl, setPdfUrl] = useState(null)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -16,7 +17,9 @@ export default function ShareModal({ report, onClose }) {
     setPdfError(null)
     setGenerating(true)
     try {
-      await generatePDFFromReport(report)
+      const blob = await generatePDFFromReport(report)
+      // Keep a fallback download URL in case auto-download was blocked
+      setPdfUrl(URL.createObjectURL(blob))
       setSent(true)
     } catch (err) {
       console.error('PDF generation failed:', err)
@@ -50,9 +53,19 @@ export default function ShareModal({ report, onClose }) {
             </div>
             <h2 className="text-2xl font-bold" style={{ color: '#1E2B4A' }}>Your audit report is on its way!</h2>
             <p className="text-base" style={{ color: '#000000' }}>
-              We've sent the report to <span style={{ color: '#2563EB' }}>{email}</span>. 
+              We've sent the report to <span style={{ color: '#2563EB' }}>{email}</span>.
               <br />Please check your inbox.
             </p>
+            {pdfUrl && (
+              <a
+                href={pdfUrl}
+                download="webyes-audit-report.pdf"
+                className="inline-block px-6 py-3 rounded-lg text-sm font-semibold text-white transition-opacity hover:opacity-90"
+                style={{ backgroundColor: '#2563EB' }}
+              >
+                Download PDF
+              </a>
+            )}
             <div className="flex gap-3 justify-center pt-10">
               {[
                 {
