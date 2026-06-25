@@ -135,7 +135,84 @@ export default function DashboardPage({ user, onLogout }) {
     : null
 
   return (
-    <div className="flex h-screen overflow-hidden" style={{ backgroundColor: '#F8FAFC' }}>
+    <div className="flex flex-col h-screen overflow-hidden" style={{ backgroundColor: '#F8FAFC' }}>
+
+      {/* ── Top nav — full width ── */}
+      <header
+        className="h-14 flex items-center gap-3 px-5 shrink-0 border-b w-full"
+        style={{ backgroundColor: '#ffffff', borderColor: '#E2E8F0' }}
+      >
+        {/* Logo text */}
+        <span className="font-black text-2xl tracking-tight mr-1 shrink-0">
+          <span style={{ color: '#2563EB' }}>W</span><span style={{ color: '#1E2B4A' }}>ebYes</span>
+        </span>
+
+        {/* URL bar */}
+        <div
+          className="flex items-center gap-2 px-3 h-9 rounded-lg flex-1 max-w-xs"
+          style={{ border: '1px solid #E2E8F0', backgroundColor: '#F8FAFC' }}
+        >
+          <Globe size={13} style={{ color: '#64748B' }} />
+          <input
+            type="text"
+            value={urlInput}
+            onChange={e => setUrlInput(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && handleScan()}
+            placeholder="https://yoursite.com"
+            className="flex-1 text-xs outline-none bg-transparent min-w-0"
+            style={{ color: '#1E2B4A' }}
+          />
+          <ChevronDown size={13} style={{ color: '#94A3B8' }} />
+        </div>
+
+        {/* Run scan */}
+        <button
+          onClick={handleScan}
+          disabled={isLoading || !urlInput.trim()}
+          className="flex items-center gap-1.5 px-4 h-9 rounded-sm text-base font-semibold text-white shrink-0"
+          style={{ backgroundColor: '#1469e1' }}
+        >
+          {isLoading ? 'Scanning…' : 'Run scan'}
+          <ChevronDown size={12} />
+        </button>
+
+        <div className="flex-1" />
+
+        {/* Credits */}
+        <div className="hidden sm:flex items-center gap-2 text-xs shrink-0" style={{ color: '#64748B' }}>
+          <div className="w-28 h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: '#E2E8F0' }}>
+            <div className="h-full rounded-full" style={{ width: '98%', backgroundColor: '#22C55E' }} />
+          </div>
+          <span className="whitespace-nowrap">686/700 (98%) credits left</span>
+          <Info size={13} style={{ color: '#94A3B8' }} />
+        </div>
+
+        <button className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-50 shrink-0">
+          <Clock size={16} style={{ color: '#94A3B8' }} />
+        </button>
+        <button className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-50 shrink-0">
+          <Bell size={16} style={{ color: '#94A3B8' }} />
+        </button>
+
+        <span
+          className="text-xs font-bold px-2 py-0.5 rounded shrink-0"
+          style={{ backgroundColor: '#FEF3C7', color: '#D97706' }}
+        >
+          PRO
+        </span>
+
+        <div
+          className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0 cursor-pointer"
+          style={{ backgroundColor: '#2563EB' }}
+          onClick={onLogout}
+          title="Logout"
+        >
+          {initials}
+        </div>
+      </header>
+
+      {/* ── Below nav: sidebar + content ── */}
+      <div className="flex flex-1 overflow-hidden">
 
       {/* ── Sidebar ── */}
       <aside
@@ -143,9 +220,7 @@ export default function DashboardPage({ user, onLogout }) {
         style={{ backgroundColor: '#ffffff', borderColor: '#E2E8F0' }}
       >
         {/* Logo icon */}
-        <div className="mb-4 flex items-center justify-center w-9 h-9">
-          <span className="text-lg font-black" style={{ color: '#2563EB' }}>W</span>
-        </div>
+        
 
         {SIDEBAR_ITEMS.map(({ Icon, label }, i) => (
           <button
@@ -183,80 +258,6 @@ export default function DashboardPage({ user, onLogout }) {
 
       {/* ── Main ── */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-
-        {/* ── Top nav ── */}
-        <header
-          className="h-14 flex items-center gap-3 px-5 shrink-0 border-b"
-          style={{ backgroundColor: '#ffffff', borderColor: '#E2E8F0' }}
-        >
-          {/* Logo text */}
-          <span className="font-black text-base tracking-tight mr-1 shrink-0">
-            <span style={{ color: '#1E2B4A' }}>Web</span><span style={{ color: '#2563EB' }}>Yes</span>
-          </span>
-
-          {/* URL bar */}
-          <div
-            className="flex items-center gap-2 px-3 h-9 rounded-lg flex-1 max-w-xs"
-            style={{ border: '1px solid #E2E8F0', backgroundColor: '#F8FAFC' }}
-          >
-            <Globe size={13} style={{ color: '#64748B' }} />
-            <input
-              type="text"
-              value={urlInput}
-              onChange={e => setUrlInput(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && handleScan()}
-              placeholder="https://yoursite.com"
-              className="flex-1 text-xs outline-none bg-transparent min-w-0"
-              style={{ color: '#1E2B4A' }}
-            />
-            <ChevronDown size={13} style={{ color: '#94A3B8' }} />
-          </div>
-
-          {/* Run scan */}
-          <button
-            onClick={handleScan}
-            disabled={isLoading || !urlInput.trim()}
-            className="flex items-center gap-1.5 px-4 h-9 rounded-lg text-xs font-semibold text-white shrink-0 disabled:opacity-50 transition-opacity hover:opacity-90"
-            style={{ backgroundColor: '#22C55E' }}
-          >
-            {isLoading ? 'Scanning…' : 'Run scan'}
-            <ChevronDown size={12} />
-          </button>
-
-          <div className="flex-1" />
-
-          {/* Credits */}
-          <div className="hidden sm:flex items-center gap-2 text-xs shrink-0" style={{ color: '#64748B' }}>
-            <div className="w-28 h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: '#E2E8F0' }}>
-              <div className="h-full rounded-full" style={{ width: '98%', backgroundColor: '#22C55E' }} />
-            </div>
-            <span className="whitespace-nowrap">686/700 (98%) credits left</span>
-            <Info size={13} style={{ color: '#94A3B8' }} />
-          </div>
-
-          <button className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-50 shrink-0">
-            <Clock size={16} style={{ color: '#94A3B8' }} />
-          </button>
-          <button className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-50 shrink-0">
-            <Bell size={16} style={{ color: '#94A3B8' }} />
-          </button>
-
-          <span
-            className="text-xs font-bold px-2 py-0.5 rounded shrink-0"
-            style={{ backgroundColor: '#FEF3C7', color: '#D97706' }}
-          >
-            PRO
-          </span>
-
-          <div
-            className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0 cursor-pointer"
-            style={{ backgroundColor: '#2563EB' }}
-            onClick={onLogout}
-            title="Logout"
-          >
-            {initials}
-          </div>
-        </header>
 
         {/* ── Scrollable content ── */}
         <div className="flex-1 overflow-y-auto p-5 space-y-4" style={{ backgroundColor: '#F1F5F9' }}>
@@ -558,6 +559,7 @@ export default function DashboardPage({ user, onLogout }) {
           )}
         </div>
       </div>
+      </div>{/* end flex-1 row (sidebar + content) */}
 
       {/* Feedback tab on right edge */}
       <div
