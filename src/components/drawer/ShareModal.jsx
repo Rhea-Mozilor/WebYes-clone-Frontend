@@ -25,7 +25,7 @@ export default function ShareModal({ report, onClose }) {
       await generatePDFFromReport(report)
     } catch (err) {
       console.error('PDF generation failed:', err)
-      setPdfError('Failed to generate PDF. Please try again.')
+      setPdfError(`PDF error: ${err?.message || String(err)}`)
     } finally {
       setGenerating(false)
     }
