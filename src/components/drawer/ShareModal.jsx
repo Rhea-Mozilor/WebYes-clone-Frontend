@@ -1,15 +1,40 @@
 import { useState } from 'react'
 import { X } from 'lucide-react'
 import { Dialog, DialogContent } from '@/components/ui/dialog'
+import { downloadGuestPDF } from '@/services/api'
 
-export default function ShareModal({ onClose }) {
+export default function ShareModal({ guestScanId, onClose }) {
   const [email, setEmail] = useState('')
   const [agreed, setAgreed] = useState(false)
   const [sent, setSent] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     if (!email) return
+    setError(null)
+
+    if (guestScanId) {
+      setLoading(true)
+      try {
+        const blob = await downloadGuestPDF(guestScanId)
+        const url = URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = 'webyes-audit-report.pdf'
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+        setTimeout(() => URL.revokeObjectURL(url), 5000)
+      } catch (err) {
+        setError('Failed to download report. Please try again.')
+        setLoading(false)
+        return
+      }
+      setLoading(false)
+    }
+
     setSent(true)
   }
 
@@ -155,12 +180,17 @@ export default function ShareModal({ onClose }) {
                 </span>
               </label>
 
+              {error && (
+                <p className="text-sm" style={{ color: '#EF4444' }}>{error}</p>
+              )}
+
               <button
                 type="submit"
-                className="w-full py-4 rounded-sm text-white text-base font-semibold transition-opacity hover:opacity-90"
+                disabled={loading}
+                className="w-full py-4 rounded-sm text-white text-base font-semibold transition-opacity hover:opacity-90 disabled:opacity-60"
                 style={{ backgroundColor: '#2563EB' }}
               >
-                Send to my inbox
+                {loading ? 'Generating PDF…' : 'Send to my inbox'}
               </button>
             </div>
           </form>

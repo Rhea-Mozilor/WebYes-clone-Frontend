@@ -121,10 +121,16 @@ export const pollGuestScan = ({ guestScanId, strategy }) =>
   axios.get(`${BASE}/api/scans/guest/${guestScanId}`).then((r) => {
     const data = r.data
     if (data.status === 'complete' && data.data) {
-      return { status: 'complete', report: transformResponse(data.data, strategy) }
+      const report = transformResponse(data.data, strategy)
+      report.guestScanId = guestScanId  // carry the ID so PDF download can use it
+      return { status: 'complete', report }
     }
     return { status: data.status, message: data.message }
   })
+
+export const downloadGuestPDF = (guestScanId) =>
+  axios.get(`${BASE}/api/scans/guest/${guestScanId}/pdf`, { responseType: 'blob' })
+    .then((r) => r.data)
 
 export const getScannerHealth = () =>
   axios.get(`${BASE}/api/scans/health`, { timeout: 10000 }).then((r) => r.data)
