@@ -526,7 +526,6 @@ function perfPage2HTML(report) {
    ═══════════════════════════════════════════════════════════════════════════ */
 async function renderPage(htmlString) {
   return new Promise((resolve, reject) => {
-    // Render inside an isolated iframe so Tailwind's oklch() colors are never loaded
     const iframe = document.createElement('iframe')
     Object.assign(iframe.style, {
       position:   'fixed',
@@ -537,11 +536,21 @@ async function renderPage(htmlString) {
       border:     'none',
       visibility: 'hidden',
     })
-    document.body.appendChild(iframe)
+
+    const fullHtml = `<!DOCTYPE html><html><head><meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=block" rel="stylesheet">
+<style>*{box-sizing:border-box;}body{margin:0;padding:0;font-family:'Inter',Arial,sans-serif;}</style>
+</head><body>${htmlString}</body></html>`
+
+    // Use srcdoc so the load event fires reliably after content is parsed
+    iframe.srcdoc = fullHtml
 
     iframe.onload = async () => {
-      // Wait for fonts to load inside the iframe
       try { await iframe.contentDocument.fonts.ready } catch (_) {}
+      // Extra tick to let images / layout settle
+      await new Promise(r => setTimeout(r, 300))
       try {
         const el = iframe.contentDocument.body.firstElementChild
         const canvas = await html2canvas(el, {
@@ -561,15 +570,8 @@ async function renderPage(htmlString) {
       }
     }
 
-    const doc = iframe.contentDocument
-    doc.open()
-    doc.write(`<!DOCTYPE html><html><head><meta charset="utf-8">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=block" rel="stylesheet">
-<style>*{box-sizing:border-box;}body{margin:0;padding:0;font-family:'Inter',Arial,sans-serif;}</style>
-</head><body>${htmlString}</body></html>`)
-    doc.close()
+    iframe.onerror = reject
+    document.body.appendChild(iframe)
   })
 }
 
