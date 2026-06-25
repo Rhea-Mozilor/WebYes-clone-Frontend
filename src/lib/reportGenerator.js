@@ -613,7 +613,7 @@ export async function generatePDFReport(report) {
     doc.addImage(imgData, 'JPEG', 0, 0, 210, 297)
   }
 
-  doc.save('webyes-audit-report.pdf')
+  return doc.output('blob')
 }
 
 /* ─── Adapter: frontend app report → PDF generator shape ───────────────── */
@@ -661,5 +661,19 @@ function adaptReport(report) {
 }
 
 export async function generatePDFFromReport(appReport) {
-  return generatePDFReport(adaptReport(appReport))
+  const blob = await generatePDFReport(adaptReport(appReport))
+
+  // Trigger browser download explicitly via anchor click
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = 'webyes-audit-report.pdf'
+  a.style.display = 'none'
+  document.body.appendChild(a)
+  a.click()
+  document.body.removeChild(a)
+  setTimeout(() => URL.revokeObjectURL(url), 10000)
+
+  // Return blob so the caller can offer a manual download link as fallback
+  return blob
 }
