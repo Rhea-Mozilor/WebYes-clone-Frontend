@@ -1,34 +1,16 @@
 import { useState } from 'react'
 import { X } from 'lucide-react'
 import { Dialog, DialogContent } from '@/components/ui/dialog'
-import { generatePDFFromReport } from '@/lib/reportGenerator'
 
-export default function ShareModal({ report, onClose }) {
+export default function ShareModal({ onClose }) {
   const [email, setEmail] = useState('')
   const [agreed, setAgreed] = useState(false)
   const [sent, setSent] = useState(false)
-  const [generating, setGenerating] = useState(false)
-  const [pdfError, setPdfError] = useState(null)
 
-  // Form submit just shows the success state — no async work here
   const handleSubmit = (e) => {
     e.preventDefault()
     if (!email) return
     setSent(true)
-  }
-
-  // PDF download is triggered by a direct button click (fresh user gesture = no browser block)
-  const handleDownloadPDF = async () => {
-    setPdfError(null)
-    setGenerating(true)
-    try {
-      await generatePDFFromReport(report)
-    } catch (err) {
-      console.error('PDF generation failed:', err)
-      setPdfError(`PDF error: ${err?.message || String(err)}`)
-    } finally {
-      setGenerating(false)
-    }
   }
 
   return (
@@ -58,17 +40,6 @@ export default function ShareModal({ report, onClose }) {
               We've sent the report to <span style={{ color: '#2563EB' }}>{email}</span>.
               <br />Please check your inbox.
             </p>
-            <button
-              onClick={handleDownloadPDF}
-              disabled={generating}
-              className="inline-block px-6 py-3 rounded-lg text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-60"
-              style={{ backgroundColor: '#2563EB' }}
-            >
-              {generating ? 'Generating PDF…' : 'Download PDF'}
-            </button>
-            {pdfError && (
-              <p className="text-sm" style={{ color: '#EF4444' }}>{pdfError}</p>
-            )}
             <div className="flex gap-3 justify-center pt-10">
               {[
                 {
@@ -183,10 +154,6 @@ export default function ShareModal({ report, onClose }) {
                   I agree to receive educational and product related emails from WebYes.
                 </span>
               </label>
-
-              {pdfError && (
-                <p className="text-sm" style={{ color: '#EF4444' }}>{pdfError}</p>
-              )}
 
               <button
                 type="submit"
