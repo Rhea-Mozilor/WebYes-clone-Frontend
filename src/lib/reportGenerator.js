@@ -525,54 +525,43 @@ function perfPage2HTML(report) {
    RENDERER + PDF EXPORT
    ═══════════════════════════════════════════════════════════════════════════ */
 async function renderPage(htmlString) {
-  return new Promise((resolve, reject) => {
-    const iframe = document.createElement('iframe')
-    Object.assign(iframe.style, {
-      position:   'fixed',
-      left:       '-9999px',
-      top:        '0',
-      width:      '794px',
-      height:     '1123px',
-      border:     'none',
-      visibility: 'hidden',
-    })
-
-    const fullHtml = `<!DOCTYPE html><html><head><meta charset="utf-8">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=block" rel="stylesheet">
-<style>*{box-sizing:border-box;}body{margin:0;padding:0;font-family:'Inter',Arial,sans-serif;}</style>
-</head><body>${htmlString}</body></html>`
-
-    // Use srcdoc so the load event fires reliably after content is parsed
-    iframe.srcdoc = fullHtml
-
-    iframe.onload = async () => {
-      try { await iframe.contentDocument.fonts.ready } catch (_) {}
-      // Extra tick to let images / layout settle
-      await new Promise(r => setTimeout(r, 300))
-      try {
-        const el = iframe.contentDocument.body.firstElementChild
-        const canvas = await html2canvas(el, {
-          scale:       2,
-          useCORS:     true,
-          allowTaint:  true,
-          logging:     false,
-          width:       794,
-          height:      1123,
-          windowWidth: 794,
-        })
-        resolve(canvas)
-      } catch (err) {
-        reject(err)
-      } finally {
-        document.body.removeChild(iframe)
-      }
-    }
-
-    iframe.onerror = reject
-    document.body.appendChild(iframe)
+  // Render directly in the main document — avoids all iframe/CSP/srcdoc issues.
+  // All report HTML uses inline styles, so page CSS doesn't interfere.
+  // Inter font is already loaded by the main page.
+  const wrapper = document.createElement('div')
+  Object.assign(wrapper.style, {
+    position:   'fixed',
+    left:       '-9999px',
+    top:        '0',
+    width:      '794px',
+    height:     '1123px',
+    overflow:   'hidden',
+    zIndex:     '-9999',
+    fontFamily: "'Inter',Arial,sans-serif",
   })
+  wrapper.innerHTML = htmlString
+  document.body.appendChild(wrapper)
+
+  // Wait for fonts and layout
+  try { await document.fonts.ready } catch (_) {}
+  await new Promise(r => setTimeout(r, 200))
+
+  try {
+    const el = wrapper.firstElementChild
+    if (!el) throw new Error('renderPage: no content element found')
+    const canvas = await html2canvas(el, {
+      scale:       2,
+      useCORS:     true,
+      allowTaint:  true,
+      logging:     false,
+      width:       794,
+      height:      1123,
+      windowWidth: 794,
+    })
+    return canvas
+  } finally {
+    if (document.body.contains(wrapper)) document.body.removeChild(wrapper)
+  }
 }
 
 export async function generatePDFReport(report) {
