@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import {
-  Globe, ChevronDown, Settings, Bell, Clock, ExternalLink,
-  X, AlertCircle, Shield, Gauge, CheckCircle, Search,
-  LayoutGrid, MapPin, BarChart2, FileText, Share2, ArrowUpCircle,
-  Info, ArrowRight, Download, ChevronRight,
+  Globe, ChevronDown, Settings, Bell, Clock,
+  Shield, Gauge, CheckCircle, Search,
+  LayoutGrid, ArrowUpCircle, Info, ArrowRight, Download,
+  Accessibility, BadgeCheck, TrendingUp,
 } from 'lucide-react'
 import { guestScan, pollGuestScan } from '@/services/api'
 import mockReport from '@/lib/mockReport'
@@ -46,12 +46,12 @@ const ISSUE_TABS = ['All', 'Accessibility', 'Performance', 'Quality', 'SEO']
 const ISSUE_TAB_ICONS = [LayoutGrid, Shield, Gauge, CheckCircle, Search]
 
 const SIDEBAR_ITEMS = [
-  { Icon: LayoutGrid,   label: 'Dashboard' },
-  { Icon: MapPin,       label: 'Locations' },
-  { Icon: BarChart2,    label: 'Analytics' },
-  { Icon: FileText,     label: 'Reports' },
-  { Icon: Share2,       label: 'Share' },
-  { Icon: ArrowUpCircle,label: 'Upgrade' },
+  { Icon: LayoutGrid,    label: 'Dashboard' },
+  { Icon: Accessibility, label: 'Accessibility' },
+  { Icon: Gauge,         label: 'Performance' },
+  { Icon: BadgeCheck,    label: 'Quality' },
+  { Icon: TrendingUp,    label: 'SEO' },
+  { Icon: ArrowUpCircle, label: 'Upgrade' },
 ]
 
 export default function DashboardPage({ user, onLogout }) {
@@ -139,7 +139,7 @@ export default function DashboardPage({ user, onLogout }) {
 
       {/* ── Top nav — full width ── */}
       <header
-        className="h-14 flex items-center gap-3 px-5 shrink-0 border-b w-full"
+        className="h-16 flex items-center gap-3 px-5 shrink-0 border-b w-full"
         style={{ backgroundColor: '#ffffff', borderColor: '#E2E8F0' }}
       >
         {/* Logo text */}
@@ -149,20 +149,20 @@ export default function DashboardPage({ user, onLogout }) {
 
         {/* URL bar */}
         <div
-          className="flex items-center gap-2 px-3 h-9 rounded-lg flex-1 max-w-xs"
+          className="flex items-center gap-2 px-3 h-9 rounded-sm flex-1 max-w-xs"
           style={{ border: '1px solid #E2E8F0', backgroundColor: '#F8FAFC' }}
         >
-          <Globe size={13} style={{ color: '#64748B' }} />
+          <Globe size={25} style={{ color: '#1a1f25' }} />
           <input
             type="text"
             value={urlInput}
             onChange={e => setUrlInput(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && handleScan()}
             placeholder="https://yoursite.com"
-            className="flex-1 text-xs outline-none bg-transparent min-w-0"
-            style={{ color: '#1E2B4A' }}
+            className="flex-1 text-base outline-none bg-transparent min-w-0"
+            style={{ color: '#1a1f25' }}
           />
-          <ChevronDown size={13} style={{ color: '#94A3B8' }} />
+          <ChevronDown size={20} style={{ color: '#1a1f25' }} />
         </div>
 
         {/* Run scan */}
@@ -181,7 +181,7 @@ export default function DashboardPage({ user, onLogout }) {
         {/* Credits */}
         <div className="hidden sm:flex items-center gap-2 text-xs shrink-0" style={{ color: '#64748B' }}>
           <div className="w-28 h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: '#E2E8F0' }}>
-            <div className="h-full rounded-full" style={{ width: '98%', backgroundColor: '#22C55E' }} />
+            <div className="h-full rounded-full" style={{ width: '98%', backgroundColor: '#2c2f4f' }} />
           </div>
           <span className="whitespace-nowrap">686/700 (98%) credits left</span>
           <Info size={13} style={{ color: '#94A3B8' }} />
@@ -216,7 +216,7 @@ export default function DashboardPage({ user, onLogout }) {
 
       {/* ── Sidebar ── */}
       <aside
-        className="w-14 flex flex-col items-center py-4 gap-1 shrink-0 border-r"
+        className="w-16 flex flex-col items-center py-4 gap-1 shrink-0 border-r"
         style={{ backgroundColor: '#ffffff', borderColor: '#E2E8F0' }}
       >
         {/* Logo icon */}
@@ -269,13 +269,7 @@ export default function DashboardPage({ user, onLogout }) {
             <div className="flex items-start justify-between mb-4">
               <div>
                 <div className="flex items-center gap-2 mb-1">
-                  <div
-                    className="w-7 h-7 rounded-full flex items-center justify-center"
-                    style={{ backgroundColor: '#DCFCE7' }}
-                  >
-                    <span style={{ color: '#22C55E', fontSize: 14 }}>▲</span>
-                  </div>
-                  <h2 className="text-base font-bold" style={{ color: '#1E2B4A' }}>
+                  <h2 className="text-2xl font-semibold" style={{ color: '#1E2B4A' }}>
                     Site health overview
                   </h2>
                 </div>
@@ -366,7 +360,7 @@ export default function DashboardPage({ user, onLogout }) {
               <div className="flex flex-col items-center justify-center py-16 gap-3">
                 <Globe size={40} style={{ color: '#CBD5E1' }} />
                 <p className="text-sm font-medium" style={{ color: '#94A3B8' }}>
-                  Enter a URL above and click <strong style={{ color: '#22C55E' }}>Run scan</strong> to view site health
+                  Enter a URL above and click <strong style={{ color: '#0b3a73' }}>Run scan</strong> to view site health
                 </p>
               </div>
             )}
@@ -564,11 +558,11 @@ export default function DashboardPage({ user, onLogout }) {
       {/* Feedback tab on right edge */}
       <div
         className="fixed right-0 top-1/2 -translate-y-1/2 z-40"
-        style={{ writingMode: 'vertical-rl' }}
+        style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)'}}
       >
         <button
-          className="px-2 py-4 text-xs font-semibold text-white rounded-l-lg"
-          style={{ backgroundColor: '#2563EB' }}
+          className="px-10 py-2 text-base  text-black rounded-r-sm"
+          style={{ backgroundColor: '#afe2f9' }}
         >
           Feedback
         </button>
