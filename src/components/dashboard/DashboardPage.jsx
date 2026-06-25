@@ -51,7 +51,6 @@ const SIDEBAR_ITEMS = [
   { Icon: Gauge,         label: 'Performance' },
   { Icon: BadgeCheck,    label: 'Quality' },
   { Icon: TrendingUp,    label: 'SEO' },
-  { Icon: ArrowUpCircle, label: 'Upgrade' },
 ]
 
 export default function DashboardPage({ user, onLogout }) {
@@ -226,13 +225,13 @@ export default function DashboardPage({ user, onLogout }) {
           <button
             key={i}
             title={label}
-            className="w-10 h-10 rounded-xl flex items-center justify-center transition-colors hover:bg-blue-50"
+            className="w-12 h-12 rounded-xl flex items-center justify-center transition-colors hover:bg-blue-50"
             style={{
               backgroundColor: i === 0 ? '#EFF6FF' : 'transparent',
-              color: i === 0 ? '#2563EB' : '#94A3B8',
+              color: i === 0 ? '#2563EB' : '#1a1f25',
             }}
           >
-            <Icon size={18} />
+            <Icon size={24} />
           </button>
         ))}
 
