@@ -9,18 +9,20 @@ export default function ShareModal({ report, onClose }) {
   const [sent, setSent] = useState(false)
   const [generating, setGenerating] = useState(false)
   const [pdfError, setPdfError] = useState(null)
-  const [pdfUrl, setPdfUrl] = useState(null)
 
-  const handleSubmit = async (e) => {
+  // Form submit just shows the success state — no async work here
+  const handleSubmit = (e) => {
     e.preventDefault()
     if (!email) return
+    setSent(true)
+  }
+
+  // PDF download is triggered by a direct button click (fresh user gesture = no browser block)
+  const handleDownloadPDF = async () => {
     setPdfError(null)
     setGenerating(true)
     try {
-      const blob = await generatePDFFromReport(report)
-      // Keep a fallback download URL in case auto-download was blocked
-      setPdfUrl(URL.createObjectURL(blob))
-      setSent(true)
+      await generatePDFFromReport(report)
     } catch (err) {
       console.error('PDF generation failed:', err)
       setPdfError('Failed to generate PDF. Please try again.')
@@ -56,15 +58,16 @@ export default function ShareModal({ report, onClose }) {
               We've sent the report to <span style={{ color: '#2563EB' }}>{email}</span>.
               <br />Please check your inbox.
             </p>
-            {pdfUrl && (
-              <a
-                href={pdfUrl}
-                download="webyes-audit-report.pdf"
-                className="inline-block px-6 py-3 rounded-lg text-sm font-semibold text-white transition-opacity hover:opacity-90"
-                style={{ backgroundColor: '#2563EB' }}
-              >
-                Download PDF
-              </a>
+            <button
+              onClick={handleDownloadPDF}
+              disabled={generating}
+              className="inline-block px-6 py-3 rounded-lg text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-60"
+              style={{ backgroundColor: '#2563EB' }}
+            >
+              {generating ? 'Generating PDF…' : 'Download PDF'}
+            </button>
+            {pdfError && (
+              <p className="text-sm" style={{ color: '#EF4444' }}>{pdfError}</p>
             )}
             <div className="flex gap-3 justify-center pt-10">
               {[
@@ -187,11 +190,10 @@ export default function ShareModal({ report, onClose }) {
 
               <button
                 type="submit"
-                disabled={generating}
-                className="w-full py-4 rounded-sm text-white text-base font-semibold transition-opacity hover:opacity-90 disabled:opacity-70"
+                className="w-full py-4 rounded-sm text-white text-base font-semibold transition-opacity hover:opacity-90"
                 style={{ backgroundColor: '#2563EB' }}
               >
-                {generating ? 'Generating PDF…' : 'Send to my inbox'}
+                Send to my inbox
               </button>
             </div>
           </form>
