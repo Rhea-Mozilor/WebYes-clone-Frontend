@@ -1,8 +1,8 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import {
   Globe, ChevronDown, Settings, Info, ArrowRight,
-  Shield, Gauge, CheckCircle, Search, LayoutGrid,
+  Shield, Gauge, LayoutGrid,
   Accessibility, BadgeCheck, TrendingUp, Zap,
   Share2, Wifi, MapPin, HelpCircle, ArrowUpCircle,
 } from 'lucide-react'
@@ -166,13 +166,6 @@ export default function DashboardPage({ user, onLogout }) {
   const criticalIssues = report
     ? Object.values(report.categories).reduce((s, c) => s + (c.issues?.filter(i => i.failingElements > 0).length ?? 0), 0)
     : 0
-
-  const scannedDate = report
-    ? new Date(report.scannedAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
-    : null
-  const scannedTime = report
-    ? new Date(report.scannedAt).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) + ' UTC'
-    : null
 
   // Mock issues per page data
   const issuesPerPage = report ? [
